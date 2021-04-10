@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/engine/layouts/layout.dart';
 import 'package:flutter_app/engine/layouts/layout_meta.dart';
 import 'package:flutter_app/engine/pieces/game_board.dart';
+import 'package:flutter_app/engine/tileset/tileset_flutter.dart';
 import 'package:flutter_app/engine/tileset/tileset_meta.dart';
 import 'package:flutter_app/engine/tileset/tileset_renderer.dart';
 import 'package:flutter_app/preferences.dart';
@@ -36,7 +37,7 @@ class _GamePageState extends State<GamePage> {
           ModalRoute.of(context)!.settings.arguments as GamePageArguments;
       final awaits1 = await Future.wait([
         LayoutMetaCollection.Load(context),
-        TilesetMetaCollection.Load(context),
+        LoadTilesets(context),
         Preferences.Instance
       ]);
       final layoutMetas = awaits1[0] as LayoutMetaCollection;

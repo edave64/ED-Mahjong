@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_app/engine/tileset/tileset_meta.dart';
 import 'package:path/path.dart';
 
-Future<TilesetMetaCollection> Load(BuildContext context) async {
+Future<TilesetMetaCollection> LoadTilesets(BuildContext context) async {
   final assetBundle = DefaultAssetBundle.of(context);
   final manifestContent = await assetBundle.loadString('AssetManifest.json');
   final Map<String, dynamic> manifestMap = json.decode(manifestContent);

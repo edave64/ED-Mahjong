@@ -1,4 +1,4 @@
-cd "../assets/tilesets/$1/" || exit
+cd "./assets/tilesets/$1/" || exit
 
 optipng -o7 ./*.png
 mkdir z
