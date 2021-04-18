@@ -1,7 +1,9 @@
 import 'dart:ui';
 
 class LocalizableString {
-  LocalizableString._(this._default, this._localizations) {}
+  static final LocalizableString empty = LocalizableString._("", {});
+
+  LocalizableString._(this._default, this._localizations);
 
   final String _default;
   final Map<String, String> _localizations;
@@ -11,7 +13,6 @@ class LocalizableString {
   }
 
   String? toLocaleString(Locale locale) {
-    final a = Map.unmodifiable({});
     final lang = locale.languageCode;
     final country = locale.countryCode;
     var script = locale.scriptCode;

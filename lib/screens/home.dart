@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_app/engine/layouts/layout_meta.dart';
+import 'package:flutter_app/screens/game.dart';
+import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
   static const Route = '/';
@@ -10,19 +12,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -31,30 +20,13 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    const levels = [
-      "Line",
-      "Line",
-      "Line",
-      "Line",
-      "Line",
-      "Line",
-      "Line",
-      "Line",
-      "Line",
-      "Line",
-      "Line",
-      "Line",
-      "Line"
-    ];
-
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text('Mahjong'),
       ),
-      body:
-          /*Center(
+      body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Consumer<LayoutMetaCollection?>(
@@ -75,8 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {
                   Navigator.pushNamed(
                     context,
-                    GamePage.Route,
-                    arguments: GamePageArguments(item.basename),
+                    '${GamePage.Route}/${item.basename}',
                   );
                 },
               );
@@ -85,9 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
             itemExtent: 50,
           );
         }),
-      )*/
-          SvgPicture.asset("assets/tilesets/classic.svg",
-              semanticsLabel: 'A red up arrow'),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(

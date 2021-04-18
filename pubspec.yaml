@@ -31,6 +31,7 @@ dependencies:
   flutter_svg: ^0.21.0
   provider: ^5.0.0
   shared_preferences: ^2.0.5
+  quiver: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +50,14 @@ flutter:
 
   assets:
      - assets/tilesets/
+     - assets/tilesets/alphabet/
+     - assets/tilesets/alphabet/
+     - assets/tilesets/bamboo/
+     - assets/tilesets/classic/
+     - assets/tilesets/default/
+     - assets/tilesets/egypt/
+     - assets/tilesets/jade/
+     - assets/tilesets/traditional/
      - assets/layouts/
 
   # An image asset can refer to one or more resolution-specific "variants", see

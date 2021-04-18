@@ -1,5 +1,3 @@
-import 'package:flutter_svg/svg.dart';
-
 class TilesetRenderer {
   static const a = [
     "TILE_1",
@@ -47,9 +45,4 @@ class TilesetRenderer {
     "DRAGON_2",
     "DRAGON_3"
   ];
-
-  void toast() async {
-    final root = await svg.fromSvgString("", "");
-    final b = root.children[0];
-  }
 }

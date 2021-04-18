@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Preferences {
   static Future<Preferences>? _instanceFuture;
 
-  static Future<Preferences> get Instance {
+  static Future<Preferences> get instance {
     if (_instanceFuture == null) {
       final completer = Completer<Preferences>();
       _instanceFuture = completer.future;

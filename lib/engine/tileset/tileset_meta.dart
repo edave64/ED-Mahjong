@@ -38,7 +38,7 @@ class TilesetMeta {
 
   TilesetMeta._(this.basename, Map<String, dynamic> desktopData)
       : name = desktopData[KName],
-        description = desktopData[KDescription],
+        description = desktopData[KDescription] ?? LocalizableString.empty,
         author = desktopData[KAuthor],
         authorEmail = desktopData[KAuthorEmail],
         fileName = desktopData[KFileName],
@@ -49,12 +49,12 @@ class TilesetMeta {
         tileWidth = desktopData[KTileWidth],
         tileHeight = desktopData[KTileHeight];
 
-  static TilesetMeta LoadString(String basename, String contents) {
-    final section = parser.parse_section(contents, KSectionName);
-    return TilesetMeta.Deserialize(basename, section);
+  static TilesetMeta loadString(String basename, String contents) {
+    final section = parser.parseSection(contents, KSectionName);
+    return TilesetMeta.deserialize(basename, section);
   }
 
-  static TilesetMeta Deserialize(
+  static TilesetMeta deserialize(
       String basename, Map<String, dynamic> desktopData) {
     if (desktopData[KVersionFormat] != 1)
       throw TilesetVersionError(

@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/engine/layouts/layout.dart';
 import 'package:flutter_app/engine/layouts/layout_meta.dart';
 import 'package:flutter_app/engine/pieces/game_board.dart';
-import 'package:flutter_app/engine/tileset/tileset_flutter.dart';
-import 'package:flutter_app/engine/tileset/tileset_meta.dart';
-import 'package:flutter_app/engine/tileset/tileset_renderer.dart';
-import 'package:flutter_app/preferences.dart';
-import 'package:provider/provider.dart';
 
-class GamePageArguments {
-  GamePageArguments(this.layout);
-  final String layout;
-}
+import '../widgets/board.dart';
 
 class GamePage extends StatefulWidget {
   static const Route = '/game';
   final String layout;
+
+  static PageRoute<dynamic>? generateRoute(RouteSettings routeSettings) {
+    final name = routeSettings.name;
+    if (name == null || !name.startsWith(Route)) return null;
+    final segments = name.split('/');
+    if (segments.length == 0)
+      return MaterialPageRoute(
+          builder: (context) => GamePage(layout: "default.desktop"));
+    return MaterialPageRoute(
+        builder: (context) => GamePage(layout: segments[2]));
+  }
+
   GamePage({Key? key, required this.layout}) : super(key: key);
 
   @override
@@ -24,54 +27,95 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
   GameBoard? board;
+  LayoutMeta? layoutMeta;
   bool ready = false;
+  int? selectedX;
+  int? selectedY;
+  int? selectedZ;
+
+  _GamePageState();
 
   @override
   initState() {
     super.initState();
+    print(widget.layout);
+
+    loadInit().catchError((error) {});
   }
 
-  load() async {
-    try {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as GamePageArguments;
-      final awaits1 = await Future.wait([
-        LayoutMetaCollection.Load(context),
-        LoadTilesets(context),
-        Preferences.Instance
-      ]);
-      final layoutMetas = awaits1[0] as LayoutMetaCollection;
-      final tilesetMetas = awaits1[1] as TilesetMetaCollection;
-      final preferences = awaits1[2] as Preferences;
+  @override
+  void didUpdateWidget(GamePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("update widget");
+    if (widget.layout != oldWidget.layout) {
+      setState(() {
+        board = null;
+        layoutMeta = null;
+      });
+      loadInit().catchError((error) {});
+    }
+  }
 
-      final layoutMeta = layoutMetas.get(args.layout);
-      final tilesetMeta = tilesetMetas.get(preferences.tileset);
-
-      final awaits2 = await Future.wait([
-        layoutMeta.getLayout(),
-        tilesetMeta.getRenderer(),
-      ]);
-
-      final layout = awaits2[0] as Layout;
-      final tilesetRenderer = awaits2[1] as TilesetRenderer;
-      ready = true;
-    } catch (e) {}
+  Future<void> loadInit() async {
+    final layoutMetas = await LayoutMetaCollection.load(context);
+    final layoutMeta = layoutMetas.get(widget.layout);
+    final layout = await layoutMeta.getLayout(context);
+    setState(() {
+      this.layoutMeta = layoutMeta;
+      print("Rebuilding board from ${layoutMeta.name}");
+      board = layout.makeBoard();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (board == null) throw Exception("");
-    final args =
-        ModalRoute.of(context)!.settings.arguments as GamePageArguments;
+    print("building widget");
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Ingame'),
-        ),
-        body: Consumer2<LayoutMetaCollection?, Preferences?>(builder: (context,
-            LayoutMetaCollection? layouts, Preferences? prefs, child) {
-          if (layouts == null || prefs == null)
-            return Center(child: Text("Loading..."));
-          return Text("Loaded");
-        }));
+      appBar: AppBar(
+        title:
+            Text(layoutMeta == null ? 'Ingame' : layoutMeta!.name.toString()),
+      ),
+      body: Center(
+          child: board == null
+              ? Text("Loading...")
+              : Board(
+                  board: board!,
+                  meta: layoutMeta!,
+                  selectedX: selectedX,
+                  selectedY: selectedY,
+                  selectedZ: selectedZ,
+                  onSelected: (x, y, z) {
+                    setState(() {
+                      final oldSelectedX = this.selectedX;
+                      final oldSelectedY = this.selectedY;
+                      final oldSelectedZ = this.selectedZ;
+
+                      if (x == oldSelectedX && y == oldSelectedY && z == oldSelectedZ) return;
+
+                      if (oldSelectedX != null &&
+                          oldSelectedY != null &&
+                          oldSelectedZ != null) {
+                        final selected = board!.tiles[oldSelectedZ]
+                            [oldSelectedY][oldSelectedX];
+                        final newTile = board!.tiles[z][y][x];
+                        if (selected != null && selected == newTile) {
+                          setState(() {
+                            board!.tiles[oldSelectedZ][oldSelectedY]
+                                [oldSelectedX] = null;
+                            board!.tiles[z][y][x] = null;
+                            selectedX = null;
+                            selectedY = null;
+                            selectedZ = null;
+                          });
+                          return;
+                        }
+                      }
+                      this.selectedX = x;
+                      this.selectedY = y;
+                      this.selectedZ = z;
+                    });
+                  },
+                )),
+    );
   }
 }

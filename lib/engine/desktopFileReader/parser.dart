@@ -25,7 +25,7 @@ class Parser {
     return ret;
   }
 
-  Map<String, dynamic> parse_section(String text, String section) {
+  Map<String, dynamic> parseSection(String text, String section) {
     final lines = text.split(RegExp(r"[\n\r]+"));
     final seek = "[$section]";
     final sectionSpec = _spec[section];
