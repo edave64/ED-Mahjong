@@ -30,17 +30,16 @@ class Board extends StatelessWidget {
     return Consumer<TilesetMetaCollection?>(
         builder: (context, TilesetMetaCollection? tilesetMetas, child) {
       if (tilesetMetas == null) return Text("Loading");
-      final tileset = tilesetMetas.get("jade.desktop");
+      final tileset = tilesetMetas.get("default.desktop");
 
-      final tileWidth = tileset.tileFaceWidth;
-      final halfTileW = tileWidth / 2;
-      final halfTileH = tileWidth / 2;
+      final halfTileW = tileset.tileFaceWidth / 2;
+      final halfTileH = tileset.tileFaceHeight / 2;
 
       return FittedBox(
           child: SizedBox(
-              width: (halfTileW * (board.width + 2)) +
+              width: (halfTileW * (board.width + 1)) +
                   tileset.levelOffsetX * board.depth,
-              height: (halfTileH * (board.height + 5)) +
+              height: (halfTileH * (board.height + 1)) +
                   tileset.levelOffsetY * board.depth,
               child: Stack(
                   children: List.generate(board.depth, (z) {

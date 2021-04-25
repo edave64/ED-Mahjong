@@ -50,6 +50,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  dart_benchmark:
+    dependency: "direct main"
+    description:
+      name: dart_benchmark
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -198,6 +205,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.0"
+  quick_log:
+    dependency: transitive
+    description:
+      name: quick_log
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.2.0"
   quiver:
     dependency: "direct main"
     description:
@@ -205,6 +219,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.26.0"
   shared_preferences:
     dependency: "direct main"
     description:

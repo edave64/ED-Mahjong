@@ -37,32 +37,56 @@ class TileLayer extends StatelessWidget {
 
     final List<Positioned> childTiles = [];
 
-    for (var y = 0; y < height; ++y) {
-      for (var x = width - 1; x >= 0; --x) {
-        final tile = tiles[y][x];
-        if (tile == null) continue;
-        childTiles.add(Positioned(
-            left: halfTileW * x,
-            top: halfTileH * y,
-            child: Tile(
+    var x = 0;
+    var y = 0;
+    for (var i = 0; i < height * width; ++i) {
+      if (i != 0) {
+        ++x;
+        --y;
+        if (y < 0) {
+          y = x;
+          x = 0;
+          if (y >= height) {
+            x = y - height + 1;
+            y = height - 1;
+          }
+        }
+        if (x >= width) {
+          y = x + y + 1;
+          x = 0;
+          if (y >= height) {
+            x = y - height + 1;
+            y = height - 1;
+          }
+        }
+      }
+      final xPos = width - x - 1;
+      final yPos = y;
+      final tile = tiles[yPos][xPos];
+      if (tile == null) continue;
+      childTiles.add(Positioned(
+          left: halfTileW * xPos,
+          top: halfTileH * yPos,
+          child: Stack(children: [
+            Tile(
               layoutMeta: meta,
               tilesetMeta: tileset,
-              selected: selectedX == x && selectedY == y,
+              selected: selectedX == xPos && selectedY == yPos,
               type: tileToString(tile),
-              x: x,
-              y: y,
+              x: xPos,
+              y: yPos,
+              text: "$i",
               onTap: (x, y) {
                 final selected = onSelected;
                 if (selected != null) selected(x, y, z);
               },
-            )));
-      }
+            ),
+          ])));
     }
 
-    return FittedBox(
-        child: SizedBox(
-            width: (halfTileW * (width + 2)) * 1.0,
-            height: (halfTileH * (height + 2)) * 1.0,
-            child: Stack(children: childTiles)));
+    return SizedBox(
+        width: (halfTileW * (width + 1)) * 1.0,
+        height: (halfTileH * (height + 1)) * 1.0,
+        child: Stack(children: childTiles));
   }
 }

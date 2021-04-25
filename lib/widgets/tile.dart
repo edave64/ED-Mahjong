@@ -15,7 +15,8 @@ class Tile extends StatelessWidget {
       required this.selected,
       required this.x,
       required this.y,
-      this.onTap})
+      this.onTap,
+      this.text})
       : super(key: key);
 
   final String type;
@@ -25,24 +26,27 @@ class Tile extends StatelessWidget {
   final int x;
   final int y;
   final Tap? onTap;
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
     final baseUrl =
         'assets/tilesets/${basenameWithoutExtension(tilesetMeta.fileName)}';
-    return GestureDetector(
-        onTap: () {
-          final tap = onTap;
-          if (tap != null) tap(x, y);
-        },
-        child: Stack(
-          alignment: AlignmentDirectional.topEnd,
-          children: [
-            Image.asset(
-              '$baseUrl/${selected ? "TILE_1_SEL" : "TILE_1"}.png',
-            ),
-            Image.asset('$baseUrl/$type.png'),
-          ],
-        ));
+    return /*Text(text ??
+            "")*/
+        GestureDetector(
+            onTap: () {
+              final tap = onTap;
+              if (tap != null) tap(x, y);
+            },
+            child: Stack(
+              alignment: AlignmentDirectional.topEnd,
+              children: [
+                Image.asset(
+                  '$baseUrl/${selected ? "TILE_1_SEL" : "TILE_1"}.png',
+                ),
+                Image.asset('$baseUrl/$type.png'),
+              ],
+            ));
   }
 }
