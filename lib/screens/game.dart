@@ -124,7 +124,7 @@ class _GamePageState extends State<GamePage> {
     try {
       newBoard = makeBoard(layout, precalc, tileSupply);
     } catch (e) {
-      setState(() {});
+      showLoosingDialog("The game has become unsolvable");
       return;
     }
 
@@ -133,9 +133,9 @@ class _GamePageState extends State<GamePage> {
     });
   }
 
-  showWinningDialog(BuildContext context) {
+  showWinningDialog() {
     showDialog(
-      context: context,
+      context: this.context,
       builder: (BuildContext context) {
         return AlertDialog(
           content: Text("You won!"),
@@ -152,9 +152,28 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  showShuffleDialog(BuildContext context) {
+  showLoosingDialog(String reason) {
     showDialog(
-      context: context,
+      context: this.context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text("You lost! $reason."),
+          actions: <Widget>[
+            FlatButton(
+                child: Text('Yay!'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                }),
+          ],
+        );
+      },
+    );
+  }
+
+  showShuffleDialog() {
+    showDialog(
+      context: this.context,
       builder: (BuildContext context) {
         return AlertDialog(
           content: Text("No more available moves"),
@@ -265,9 +284,9 @@ class _GamePageState extends State<GamePage> {
                         }
 
                         if (empty) {
-                          showWinningDialog(context);
+                          showWinningDialog();
                         } else {
-                          showShuffleDialog(context);
+                          showShuffleDialog();
                         }
                       }
                       setState(() {
