@@ -133,6 +133,44 @@ class _GamePageState extends State<GamePage> {
     });
   }
 
+  showWinningDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text("You won!"),
+          actions: <Widget>[
+            FlatButton(
+                child: Text('Yay!'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                }),
+          ],
+        );
+      },
+    );
+  }
+
+  showShuffleDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text("No more available moves"),
+          actions: <Widget>[
+            FlatButton(
+                child: Text('Shuffle'),
+                onPressed: () {
+                  shuffle();
+                  Navigator.of(context).pop();
+                }),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     print("building widget");
@@ -151,119 +189,93 @@ class _GamePageState extends State<GamePage> {
                   selectedY: selectedY,
                   selectedZ: selectedZ,
                   onSelected: (x, y, z) {
-                    print("clicked on $x,$y,$z");
-                    setState(() {
-                      final board = this.board!;
-                      final oldSelectedX = this.selectedX;
-                      final oldSelectedY = this.selectedY;
-                      final oldSelectedZ = this.selectedZ;
+                    final board = this.board!;
+                    final oldSelectedX = this.selectedX;
+                    final oldSelectedY = this.selectedY;
+                    final oldSelectedZ = this.selectedZ;
 
-                      if (x == oldSelectedX &&
-                          y == oldSelectedY &&
-                          z == oldSelectedZ) return;
+                    if (x == oldSelectedX &&
+                        y == oldSelectedY &&
+                        z == oldSelectedZ) return;
 
-                      final coord = Coordinate(x, y, z);
-                      if (!board.movable.contains(coord)) return;
+                    final coord = Coordinate(x, y, z);
+                    if (!board.movable.contains(coord)) return;
 
-                      if (oldSelectedX != null &&
-                          oldSelectedY != null &&
-                          oldSelectedZ != null) {
-                        final selected = board.tiles[oldSelectedZ][oldSelectedY]
-                            [oldSelectedX];
-                        final newTile = board.tiles[z][y][x];
-                        if (selected != null &&
-                            newTile != null &&
-                            tilesMatch(selected, newTile)) {
-                          setState(() {
-                            board.update((tiles) {
-                              tiles[oldSelectedZ][oldSelectedY][oldSelectedX] =
-                                  null;
-                              tiles[z][y][x] = null;
-                            });
-                            final newMovables = board.movable;
-                            final Set<MahjongTile> tiles = {};
-                            bool movesLeft = false;
+                    if (oldSelectedX == null ||
+                        oldSelectedY == null ||
+                        oldSelectedZ == null) {
+                      setState(() {
+                        this.selectedX = x;
+                        this.selectedY = y;
+                        this.selectedZ = z;
+                      });
+                      return;
+                    }
 
-                            for (var moveableCoord in newMovables) {
-                              final tile = board.tiles[moveableCoord.z]
-                                  [moveableCoord.y][moveableCoord.x]!;
-                              final normalizedTile = isSeason(tile)
-                                  ? MahjongTile.SEASON_1
-                                  : isFlower(tile)
-                                      ? MahjongTile.FLOWER_1
-                                      : tile;
-                              if (tiles.contains(normalizedTile)) {
-                                movesLeft = true;
-                                print("Pair of ${tileToString(tile)}");
-                                break;
-                              }
-                              tiles.add(normalizedTile);
-                            }
+                    final selected =
+                        board.tiles[oldSelectedZ][oldSelectedY][oldSelectedX];
+                    final newTile = board.tiles[z][y][x];
 
-                            if (!movesLeft) {
-                              final tiles = board.tiles;
+                    if (selected != null &&
+                        newTile != null &&
+                        tilesMatch(selected, newTile)) {
+                      setState(() {
+                        board.update((tiles) {
+                          tiles[oldSelectedZ][oldSelectedY][oldSelectedX] =
+                              null;
+                          tiles[z][y][x] = null;
+                        });
+                      });
 
-                              var empty = true;
+                      final newMovables = board.movable;
+                      final Set<MahjongTile> tiles = {};
+                      bool movesLeft = false;
 
-                              boardSearch:
-                              for (var layer in tiles) {
-                                for (var row in layer) {
-                                  for (var tile in row) {
-                                    if (tile != null) {
-                                      empty = false;
-                                      break boardSearch;
-                                    }
-                                  }
-                                }
-                              }
+                      for (var moveableCoord in newMovables) {
+                        final tile = board.tiles[moveableCoord.z]
+                            [moveableCoord.y][moveableCoord.x]!;
+                        final normalizedTile = isSeason(tile)
+                            ? MahjongTile.SEASON_1
+                            : isFlower(tile)
+                                ? MahjongTile.FLOWER_1
+                                : tile;
+                        if (tiles.contains(normalizedTile)) {
+                          movesLeft = true;
+                          print("Pair of ${tileToString(tile)}");
+                          break;
+                        }
+                        tiles.add(normalizedTile);
+                      }
 
-                              if (empty) {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      content: Text("You won!"),
-                                      actions: <Widget>[
-                                        FlatButton(
-                                            child: Text('Yay!'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              Navigator.of(context).pop();
-                                            }),
-                                      ],
-                                    );
-                                  },
-                                );
-                              } else {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      content: Text("No more available moves"),
-                                      actions: <Widget>[
-                                        FlatButton(
-                                            child: Text('Shuffle'),
-                                            onPressed: () {
-                                              shuffle();
-                                              Navigator.of(context).pop();
-                                            }),
-                                      ],
-                                    );
-                                  },
-                                );
+                      if (!movesLeft) {
+                        final tiles = board.tiles;
+
+                        var empty = true;
+
+                        boardSearch:
+                        for (var layer in tiles) {
+                          for (var row in layer) {
+                            for (var tile in row) {
+                              if (tile != null) {
+                                empty = false;
+                                break boardSearch;
                               }
                             }
-                            selectedX = null;
-                            selectedY = null;
-                            selectedZ = null;
-                          });
-                          return;
+                          }
+                        }
+
+                        if (empty) {
+                          showWinningDialog(context);
+                        } else {
+                          showShuffleDialog(context);
                         }
                       }
-                      this.selectedX = x;
-                      this.selectedY = y;
-                      this.selectedZ = z;
-                    });
+                      setState(() {
+                        selectedX = null;
+                        selectedY = null;
+                        selectedZ = null;
+                      });
+                    }
                   },
                 )),
     );
