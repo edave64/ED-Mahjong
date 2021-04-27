@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/engine/layouts/layout_meta.dart';
@@ -17,6 +18,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    final locale = PlatformDispatcher.instance.locale;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Mahjong'),
@@ -26,9 +29,15 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (context, LayoutMetaCollection? layouts, child) {
           final List<LayoutMeta> list =
               layouts == null ? [] : [...layouts.list()];
-          list.sort((a, b) => a.name.toString().compareTo(b.name.toString()));
+          list.sort((a, b) {
+            if (a.basename == 'default.desktop') return -1;
+            if (b.basename == 'default.desktop') return 1;
+            final aString = a.name.toString();
+            final bString = b.name.toString();
+            return aString.compareTo(bString);
+          });
           return LayoutBuilder(builder: (context, contraints) {
-            final cols = max((contraints.maxWidth / 200).floor(), 2);
+            final cols = max((contraints.maxWidth / 150).floor(), 2);
             print(cols);
             return GridView.count(
               crossAxisCount: cols,

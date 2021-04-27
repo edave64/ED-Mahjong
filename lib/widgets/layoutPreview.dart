@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/engine/layouts/layout_meta.dart';
 
@@ -36,7 +38,8 @@ class _LayoutPreviewState extends State<LayoutPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final label = widget.layoutMeta.name.toString();
+    final locale = PlatformDispatcher.instance.locale;
+    final label = widget.layoutMeta.name.toLocaleString(locale);
     final text = Center(
         child: Stack(
       children: <Widget>[
@@ -47,7 +50,7 @@ class _LayoutPreviewState extends State<LayoutPreview> {
             fontSize: 20,
             foreground: Paint()
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 2
+              ..strokeWidth = 3
               ..color = Colors.white,
           ),
         ),

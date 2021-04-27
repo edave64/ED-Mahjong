@@ -12,7 +12,7 @@ class LocalizableString {
     return _default;
   }
 
-  String? toLocaleString(Locale locale) {
+  String toLocaleString(Locale locale) {
     final lang = locale.languageCode;
     final country = locale.countryCode;
     var script = locale.scriptCode;
@@ -25,9 +25,10 @@ class LocalizableString {
     ];
     for (var variant in variants) {
       if (_localizations.containsKey(variant)) {
-        return _localizations[variant];
+        return _localizations[variant]!;
       }
     }
+    return _default;
   }
 }
 
