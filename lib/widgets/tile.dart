@@ -1,7 +1,7 @@
+import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
+import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_app/engine/layouts/layout_meta.dart';
-import 'package:flutter_app/engine/tileset/tileset_meta.dart';
 import 'package:path/path.dart';
 
 typedef void Tap(int x, int y);

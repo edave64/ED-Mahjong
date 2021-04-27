@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter_app/engine/pieces/mahjong_tile.dart';
+import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 
 class InfiniteTileSupply extends Iterator<MahjongTile> {
   final Random random;

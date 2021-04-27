@@ -1,8 +1,8 @@
+import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
+import 'package:ed_mahjong/engine/tileset/tileset_flutter.dart';
+import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
+import 'package:ed_mahjong/preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/engine/layouts/layout_meta.dart';
-import 'package:flutter_app/engine/tileset/tileset_flutter.dart';
-import 'package:flutter_app/engine/tileset/tileset_meta.dart';
-import 'package:flutter_app/preferences.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/game.dart';
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
               create: (context) => Preferences.instance, initialData: null)
         ],
         child: MaterialApp(
-          title: 'Flutter Demo',
+          title: 'ED Mahjong',
           theme:
               ThemeData(primarySwatch: Colors.amber, accentColor: Colors.brown),
           onGenerateRoute: (routeSettings) {

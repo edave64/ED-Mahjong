@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:flutter_app/engine/layouts/layout.dart';
-import 'package:flutter_app/engine/layouts/layout_precalc.dart';
-import 'package:flutter_app/engine/pieces/game_board.dart';
-import 'package:flutter_app/engine/pieces/mahjong_tile.dart';
+import 'package:ed_mahjong/engine/layouts/layout.dart';
+import 'package:ed_mahjong/engine/layouts/layout_precalc.dart';
+import 'package:ed_mahjong/engine/pieces/game_board.dart';
+import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 
 import 'infinite_tile_supply.dart';
 

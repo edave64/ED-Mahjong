@@ -1,16 +1,12 @@
-# flutter_app
+# ed_mahjong
 
-A new Flutter application.
+An open, ad free, mahjong game, written in flutter.
 
-## Getting Started
+## Build notes
 
-This project is a starting point for a Flutter application.
+The project only contains svg versions of the tilesets. They need to be
+converted PNGs to use. Run "dart run scripts/convertTileset" to generate
+them.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+You can additionally compact the generated files using the
+"optimizeTilesets.sh" script.

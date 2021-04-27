@@ -1,10 +1,10 @@
+import 'package:ed_mahjong/engine/layouts/layout.dart';
+import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
+import 'package:ed_mahjong/engine/layouts/top_down_generator.dart';
+import 'package:ed_mahjong/engine/pieces/game_board.dart';
+import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
+import 'package:ed_mahjong/engine/tileset/tileset_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/engine/layouts/layout.dart';
-import 'package:flutter_app/engine/layouts/layout_meta.dart';
-import 'package:flutter_app/engine/layouts/top_down_generator.dart';
-import 'package:flutter_app/engine/pieces/game_board.dart';
-import 'package:flutter_app/engine/pieces/mahjong_tile.dart';
-import 'package:flutter_app/engine/tileset/tileset_flutter.dart';
 import 'package:path/path.dart';
 
 import '../widgets/board.dart';

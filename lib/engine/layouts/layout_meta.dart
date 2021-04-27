@@ -1,10 +1,10 @@
 import 'dart:convert';
 
+import 'package:ed_mahjong/engine/desktopFileReader/localizable_string.dart';
+import 'package:ed_mahjong/engine/desktopFileReader/parse_spec.dart';
+import 'package:ed_mahjong/engine/desktopFileReader/parser.dart';
+import 'package:ed_mahjong/engine/layouts/layout.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_app/engine/desktopFileReader/localizable_string.dart';
-import 'package:flutter_app/engine/desktopFileReader/parse_spec.dart';
-import 'package:flutter_app/engine/desktopFileReader/parser.dart';
-import 'package:flutter_app/engine/layouts/layout.dart';
 import 'package:path/path.dart';
 
 final parser = buildTilesetParser();

@@ -1,8 +1,8 @@
+import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
+import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
+import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
+import 'package:ed_mahjong/widgets/tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/engine/layouts/layout_meta.dart';
-import 'package:flutter_app/engine/pieces/mahjong_tile.dart';
-import 'package:flutter_app/engine/tileset/tileset_meta.dart';
-import 'package:flutter_app/widgets/tile.dart';
 
 typedef void Selected(int x, int y, int z);
 

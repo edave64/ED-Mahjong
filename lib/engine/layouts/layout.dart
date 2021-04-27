@@ -1,4 +1,4 @@
-import 'package:flutter_app/engine/layouts/layout_precalc.dart';
+import 'package:ed_mahjong/engine/layouts/layout_precalc.dart';
 import 'package:quiver/core.dart';
 
 class Layout {

@@ -1,10 +1,9 @@
 import 'dart:math';
-import 'dart:ui';
 
+import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
+import 'package:ed_mahjong/screens/game.dart';
+import 'package:ed_mahjong/widgets/layoutPreview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/engine/layouts/layout_meta.dart';
-import 'package:flutter_app/screens/game.dart';
-import 'package:flutter_app/widgets/layoutPreview.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -18,11 +17,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final locale = PlatformDispatcher.instance.locale;
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mahjong'),
+        title: Text('ED Mahjong'),
       ),
       body: Center(
         child: Consumer<LayoutMetaCollection?>(

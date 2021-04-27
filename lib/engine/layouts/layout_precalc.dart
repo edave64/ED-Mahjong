@@ -1,5 +1,5 @@
-import 'package:flutter_app/engine/layouts/layout.dart';
-import 'package:flutter_app/engine/pieces/mahjong_tile.dart';
+import 'package:ed_mahjong/engine/layouts/layout.dart';
+import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 
 typedef void Update(List<List<List<MahjongTile?>>> tiles);
 

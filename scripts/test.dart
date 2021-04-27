@@ -1,6 +1,6 @@
 import 'package:dart_benchmark/dart_benchmark.dart';
-import 'package:flutter_app/engine/layouts/layout.dart';
-import 'package:flutter_app/engine/layouts/top_down_generator.dart';
+import 'package:ed_mahjong/engine/layouts/layout.dart';
+import 'package:ed_mahjong/engine/layouts/top_down_generator.dart';
 
 Future<void> main() async {
   Layout layout = layoutDefault();

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/engine/layouts/layout_meta.dart';
+import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 
 class LayoutPreview extends StatefulWidget {
   final LayoutMeta layoutMeta;

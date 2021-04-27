@@ -1,7 +1,7 @@
-import 'package:flutter_app/engine/desktopFileReader/localizable_string.dart';
-import 'package:flutter_app/engine/desktopFileReader/parse_spec.dart';
-import 'package:flutter_app/engine/desktopFileReader/parser.dart';
-import 'package:flutter_app/engine/tileset/tileset_renderer.dart';
+import 'package:ed_mahjong/engine/desktopFileReader/localizable_string.dart';
+import 'package:ed_mahjong/engine/desktopFileReader/parse_spec.dart';
+import 'package:ed_mahjong/engine/desktopFileReader/parser.dart';
+import 'package:ed_mahjong/engine/tileset/tileset_renderer.dart';
 
 final parser = buildTilesetParser();
 
