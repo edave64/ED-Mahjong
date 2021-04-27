@@ -25,7 +25,7 @@ GameBoard makeBoard(Layout layout, LayoutPrecalc precalc,
     }
   }
 
-  var steps = Solve(precalc, tiles, moveables, 0, random);
+  var steps = solve(precalc, tiles, moveables, 0, random);
 
   if (steps == null) throw new Exception("Unsolvable layout!");
 
@@ -47,7 +47,7 @@ GameBoard makeBoard(Layout layout, LayoutPrecalc precalc,
   return GameBoard(finalTiles);
 }
 
-List<int>? Solve(LayoutPrecalc precalc, List<MahjongTile?> tiles,
+List<int>? solve(LayoutPrecalc precalc, List<MahjongTile?> tiles,
     Set<int> moveables, int tilesPlaced, Random random) {
   if (tilesPlaced >= precalc.idxLength()) return [];
 
@@ -80,7 +80,7 @@ List<int>? Solve(LayoutPrecalc precalc, List<MahjongTile?> tiles,
       }
 
       final ret =
-          Solve(precalc, subTiles, subMovables, tilesPlaced + 2, random);
+          solve(precalc, subTiles, subMovables, tilesPlaced + 2, random);
 
       if (ret != null) {
         ret.add(coord1);

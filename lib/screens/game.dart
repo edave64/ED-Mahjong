@@ -140,7 +140,7 @@ class _GamePageState extends State<GamePage> {
         return AlertDialog(
           content: Text("You won!"),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
                 child: Text('Yay!'),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -159,7 +159,7 @@ class _GamePageState extends State<GamePage> {
         return AlertDialog(
           content: Text("You lost! $reason."),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
                 child: Text('Yay!'),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -178,7 +178,7 @@ class _GamePageState extends State<GamePage> {
         return AlertDialog(
           content: Text("No more available moves"),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
                 child: Text('Shuffle'),
                 onPressed: () {
                   shuffle();
