@@ -67,26 +67,24 @@ class TileLayer extends StatelessWidget {
       childTiles.add(Positioned(
           left: halfTileW * xPos,
           top: halfTileH * yPos,
-          child: Stack(children: [
-            Tile(
-              layoutMeta: meta,
-              tilesetMeta: tileset,
-              selected: selectedX == xPos && selectedY == yPos,
-              type: tileToString(tile),
-              x: xPos,
-              y: yPos,
-              text: "$i",
-              onTap: (x, y) {
-                final selected = onSelected;
-                if (selected != null) selected(x, y, z);
-              },
-            ),
-          ])));
+          child: makeTile(xPos, yPos, tile)));
     }
 
     return SizedBox(
         width: (halfTileW * (width + 1)) * 1.0,
         height: (halfTileH * (height + 1)) * 1.0,
         child: Stack(children: childTiles));
+  }
+
+  Tile makeTile(int x, int y, MahjongTile tile) {
+    return Tile(
+      tilesetMeta: tileset,
+      selected: selectedX == x && selectedY == y,
+      type: tile,
+      onTap: () {
+        final selected = onSelected;
+        if (selected != null) selected(x, y, z);
+      },
+    );
   }
 }
