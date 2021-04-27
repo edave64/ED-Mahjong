@@ -24,14 +24,17 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Consumer<LayoutMetaCollection?>(
             builder: (context, LayoutMetaCollection? layouts, child) {
-          final List<LayoutMeta> list =
-              layouts == null ? [] : [...layouts.list()];
+          final List<MapEntry<String, LayoutMeta>> list = layouts == null
+              ? []
+              : [
+                  ...layouts.list().map((item) {
+                    String key = item.name.toString();
+                    if (item.basename == 'default.desktop') key = "";
+                    return MapEntry(key, item);
+                  })
+                ];
           list.sort((a, b) {
-            if (a.basename == 'default.desktop') return -1;
-            if (b.basename == 'default.desktop') return 1;
-            final aString = a.name.toString();
-            final bString = b.name.toString();
-            return aString.compareTo(bString);
+            return a.key.compareTo(b.key);
           });
           return LayoutBuilder(builder: (context, contraints) {
             final cols = max((contraints.maxWidth / 150).floor(), 2);
@@ -41,12 +44,12 @@ class _MyHomePageState extends State<MyHomePage> {
               children: list.map((item) {
                 return InkWell(
                   child: LayoutPreview(
-                    layoutMeta: item,
+                    layoutMeta: item.value,
                   ),
                   onTap: () {
                     Navigator.pushNamed(
                       context,
-                      '${GamePage.Route}/${item.basename}',
+                      '${GamePage.Route}/${item.value.basename}',
                     );
                   },
                 );
