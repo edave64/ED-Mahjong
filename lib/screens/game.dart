@@ -294,6 +294,12 @@ class _GamePageState extends State<GamePage> {
                         selectedY = null;
                         selectedZ = null;
                       });
+                    } else {
+                      setState(() {
+                        this.selectedX = x;
+                        this.selectedY = y;
+                        this.selectedZ = z;
+                      });
                     }
                   },
                 )),
