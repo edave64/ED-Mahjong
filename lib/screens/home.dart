@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/engine/layouts/layout_meta.dart';
 import 'package:flutter_app/screens/game.dart';
+import 'package:flutter_app/widgets/layoutPreview.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -33,9 +34,8 @@ class _MyHomePageState extends State<MyHomePage> {
               crossAxisCount: cols,
               children: list.map((item) {
                 return InkWell(
-                  child: Container(
-                    height: 50,
-                    child: Center(child: Text(item.name.toString())),
+                  child: LayoutPreview(
+                    layoutMeta: item,
                   ),
                   onTap: () {
                     Navigator.pushNamed(

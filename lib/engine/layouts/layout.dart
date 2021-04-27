@@ -15,6 +15,17 @@ class Layout {
   LayoutPrecalc getPrecalc() {
     return LayoutPrecalc(this, this._pieces);
   }
+
+  List<List<List<bool>>> get pieces {
+    return unmodifiable(_pieces
+        .map((layer) =>
+            unmodifiable(layer.map((row) => unmodifiable(row)).toList()))
+        .toList());
+  }
+}
+
+List<T> unmodifiable<T>(List<T> list) {
+  return List.unmodifiable(list).cast<T>();
 }
 
 class Coordinate {
