@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:ed_mahjong/engine/layouts/layout.dart';
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/engine/layouts/top_down_generator.dart';
 import 'package:ed_mahjong/engine/pieces/game_board.dart';
 import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_flutter.dart';
+import 'package:ed_mahjong/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
@@ -13,15 +16,11 @@ class GamePage extends StatefulWidget {
   static const Route = '/game';
   final String layout;
 
-  static PageRoute<dynamic>? generateRoute(RouteSettings routeSettings) {
-    final name = routeSettings.name;
-    if (name == null || !name.startsWith(Route)) return null;
-    final segments = name.split('/');
-    if (segments.length == 0)
-      return MaterialPageRoute(
-          builder: (context) => GamePage(layout: "default.desktop"));
-    return MaterialPageRoute(
-        builder: (context) => GamePage(layout: segments[2]));
+  static PageRoute<dynamic>? generateRoute(
+      RouteSettings routeSettings, Uri uri) {
+    var id =
+        uri.pathSegments.length > 1 ? uri.pathSegments[1] : "default.desktop";
+    return MaterialPageRoute(builder: (context) => GamePage(layout: id));
   }
 
   GamePage({Key? key, required this.layout}) : super(key: key);
@@ -66,7 +65,8 @@ class _GamePageState extends State<GamePage> {
     final tilesetMetas = await loadTilesets(this.context);
     final layoutMeta = layoutMetas.get(widget.layout);
     final layout = await layoutMeta.getLayout(this.context);
-    final tileset = tilesetMetas.get("default.desktop");
+    final preferences = await Preferences.instance;
+    final tileset = tilesetMetas.get(preferences.tileset);
 
     final imgs = [
       "TILE_1",
@@ -192,11 +192,12 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("building widget");
+    final locale = PlatformDispatcher.instance.locale;
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text(layoutMeta == null ? 'Ingame' : layoutMeta!.name.toString()),
+        title: Text(layoutMeta == null
+            ? 'Ingame'
+            : layoutMeta!.name.toLocaleString(locale)),
       ),
       body: Center(
           child: board == null

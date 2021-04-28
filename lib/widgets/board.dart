@@ -1,6 +1,7 @@
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/engine/pieces/game_board.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
+import 'package:ed_mahjong/preferences.dart';
 import 'package:ed_mahjong/widgets/tile_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,10 +28,10 @@ class Board extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TilesetMetaCollection?>(
-        builder: (context, TilesetMetaCollection? tilesetMetas, child) {
-      if (tilesetMetas == null) return Text("Loading");
-      final tileset = tilesetMetas.get("default.desktop");
+    return Consumer2<TilesetMetaCollection?, Preferences?>(builder: (context,
+        TilesetMetaCollection? tilesetMetas, Preferences? preferences, child) {
+      if (tilesetMetas == null || preferences == null) return Text("Loading");
+      final tileset = tilesetMetas.get(preferences.tileset);
 
       final halfTileW = tileset.tileFaceWidth / 2;
       final halfTileH = tileset.tileFaceHeight / 2;

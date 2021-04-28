@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import 'screens/game.dart';
 import 'screens/home.dart';
+import 'screens/settings.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,18 +35,15 @@ class MyApp extends StatelessWidget {
             if (name == null || name == '/')
               return MaterialPageRoute(builder: (context) => MyHomePage());
 
-            print(name);
             var uri = Uri.parse(name);
-            if (uri.pathSegments.length == 2 &&
-                uri.pathSegments.first == 'game') {
-              var id = uri.pathSegments[1];
-              return MaterialPageRoute(
-                  builder: (context) => GamePage(layout: id));
+            if (uri.pathSegments.first == 'game') {
+              return GamePage.generateRoute(routeSettings, uri);
             }
 
-            if (name.startsWith(GamePage.Route)) {
-              return GamePage.generateRoute(routeSettings);
+            if (uri.pathSegments.first == 'settings') {
+              return SettingsPage.generateRoute(routeSettings, uri);
             }
+
             return MaterialPageRoute(builder: (context) => MyHomePage());
           },
         ));
