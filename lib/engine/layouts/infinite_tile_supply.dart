@@ -81,12 +81,13 @@ class InfiniteTileSupply extends Iterator<MahjongTile> {
     if (nextTile == null && lastTile != null) {
       nextTile = _randomizeTile(lastTile!);
       lastTile = null;
+      return true;
     }
     if (tileIterator == null) {
       tileIterator = _makeTileIterator();
     }
-    final endReached = tileIterator!.moveNext();
-    if (endReached) {
+    final endNotReached = tileIterator!.moveNext();
+    if (!endNotReached) {
       tileIterator = _makeTileIterator();
       tileIterator!.moveNext();
     }
