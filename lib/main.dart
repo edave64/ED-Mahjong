@@ -1,3 +1,5 @@
+import 'package:ed_mahjong/engine/backgrounds/background_flutter.dart';
+import 'package:ed_mahjong/engine/backgrounds/background_meta.dart';
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_flutter.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
@@ -23,13 +25,25 @@ class MyApp extends StatelessWidget {
               initialData: null),
           FutureProvider<TilesetMetaCollection?>(
               create: (context) => loadTilesets(context), initialData: null),
+          FutureProvider<BackgroundMetaCollection?>(
+              create: (context) => loadBackgrounds(context), initialData: null),
           FutureProvider(
-              create: (context) => Preferences.instance, initialData: null)
+              create: (context) => Preferences.instance, initialData: null),
         ],
         child: MaterialApp(
           title: 'ED Mahjong',
-          theme:
-              ThemeData(primarySwatch: Colors.amber, accentColor: Colors.brown),
+          theme: ThemeData(
+            primarySwatch: Colors.amber,
+            accentColor: Colors.amber,
+            brightness: Brightness.light,
+          ),
+          darkTheme: ThemeData(
+            primarySwatch: Colors.amber,
+            accentColor: Colors.amber,
+            brightness: Brightness.dark,
+            /* dark theme settings */
+          ),
+          themeMode: ThemeMode.system,
           onGenerateRoute: (routeSettings) {
             final name = routeSettings.name;
             if (name == null || name == '/')

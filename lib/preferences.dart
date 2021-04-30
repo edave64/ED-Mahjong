@@ -22,6 +22,8 @@ class Preferences {
 
   static const TilesetProp = "ed:mahjong:tileset";
   static const TilesetDefault = "default.desktop";
+  static const BackgroundProp = "ed:mahjong:background";
+  static const String? BackgroundDefault = null;
 
   String get tileset {
     return sharedPrefs.getString(TilesetProp) ?? TilesetDefault;
@@ -29,5 +31,17 @@ class Preferences {
 
   set tileset(String tileset) {
     sharedPrefs.setString(TilesetProp, tileset);
+  }
+
+  String? get background {
+    return sharedPrefs.getString(BackgroundProp) ?? BackgroundDefault;
+  }
+
+  set background(String? background) {
+    if (background == null) {
+      sharedPrefs.remove(BackgroundProp);
+      return;
+    }
+    sharedPrefs.setString(BackgroundProp, background);
   }
 }

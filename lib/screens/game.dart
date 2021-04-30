@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:ed_mahjong/engine/backgrounds/background_meta.dart';
 import 'package:ed_mahjong/engine/layouts/layout.dart';
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/engine/layouts/top_down_generator.dart';
@@ -9,6 +10,7 @@ import 'package:ed_mahjong/engine/tileset/tileset_flutter.dart';
 import 'package:ed_mahjong/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/board.dart';
 
@@ -199,7 +201,7 @@ class _GamePageState extends State<GamePage> {
             ? 'Ingame'
             : layoutMeta!.name.toLocaleString(locale)),
       ),
-      body: Center(
+      body: renderBackground(Center(
           child: board == null
               ? Text("Loading...")
               : Board(
@@ -303,7 +305,27 @@ class _GamePageState extends State<GamePage> {
                       });
                     }
                   },
-                )),
+                ))),
     );
+  }
+
+  Widget renderBackground(Widget body) {
+    return Consumer2<Preferences?, BackgroundMetaCollection?>(builder: (context,
+        Preferences? preferences,
+        BackgroundMetaCollection? backgrounds,
+        child) {
+      if (preferences == null || backgrounds == null) return body;
+      final background = preferences.background;
+      if (background == null) return body;
+      final meta = backgrounds.get(background);
+      return Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/backgrounds/${meta.fileName}"),
+                repeat: ImageRepeat.repeat,
+                fit: BoxFit.none),
+          ),
+          child: body);
+    });
   }
 }
