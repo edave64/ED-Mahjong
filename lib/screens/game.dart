@@ -58,7 +58,9 @@ class _GamePageState extends State<GamePage> {
         board = null;
         layoutMeta = null;
       });
-      loadInit().catchError((error) {});
+      loadInit().catchError((error) {
+        print(error);
+      });
     }
   }
 
@@ -84,20 +86,12 @@ class _GamePageState extends State<GamePage> {
 
     final precalc = layout.getPrecalc();
     GameBoard? b;
-    do {
-      try {
-        b = makeBoard(layout, precalc);
-        if (b.matchable.length == 0) {
-          b = null;
-          continue;
-        }
-      } catch (e, stack) {
-        print(e);
-        print(stack);
-        continue;
-      }
-      break;
-    } while (b == null);
+    try {
+      b = makeBoard(layout, precalc);
+    } catch (e) {
+      showLoosingDialog("The layout is impossible to solve");
+      return;
+    }
 
     setState(() {
       this.layoutMeta = layoutMeta;
@@ -140,7 +134,9 @@ class _GamePageState extends State<GamePage> {
       context: this.context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text("You won!"),
+          content: Text(
+            "You won!",
+          ),
           actions: <Widget>[
             TextButton(
                 child: Text('Yay!'),
@@ -162,7 +158,7 @@ class _GamePageState extends State<GamePage> {
           content: Text("You lost! $reason."),
           actions: <Widget>[
             TextButton(
-                child: Text('Yay!'),
+                child: Text('Dang it!'),
                 onPressed: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
@@ -183,8 +179,8 @@ class _GamePageState extends State<GamePage> {
             TextButton(
                 child: Text('Shuffle'),
                 onPressed: () {
-                  shuffle();
                   Navigator.of(context).pop();
+                  shuffle();
                 }),
           ],
         );
@@ -226,11 +222,7 @@ class _GamePageState extends State<GamePage> {
                     if (oldSelectedX == null ||
                         oldSelectedY == null ||
                         oldSelectedZ == null) {
-                      setState(() {
-                        this.selectedX = x;
-                        this.selectedY = y;
-                        this.selectedZ = z;
-                      });
+                      setSelectedCoord(x, y, z);
                       return;
                     }
 
@@ -249,60 +241,10 @@ class _GamePageState extends State<GamePage> {
                         });
                       });
 
-                      final newMovables = board.movable;
-                      final Set<MahjongTile> tiles = {};
-                      bool movesLeft = false;
-
-                      for (var moveableCoord in newMovables) {
-                        final tile = board.tiles[moveableCoord.z]
-                            [moveableCoord.y][moveableCoord.x]!;
-                        final normalizedTile = isSeason(tile)
-                            ? MahjongTile.SEASON_1
-                            : isFlower(tile)
-                                ? MahjongTile.FLOWER_1
-                                : tile;
-                        if (tiles.contains(normalizedTile)) {
-                          movesLeft = true;
-                          print("Pair of ${tileToString(tile)}");
-                          break;
-                        }
-                        tiles.add(normalizedTile);
-                      }
-
-                      if (!movesLeft) {
-                        final tiles = board.tiles;
-
-                        var empty = true;
-
-                        boardSearch:
-                        for (var layer in tiles) {
-                          for (var row in layer) {
-                            for (var tile in row) {
-                              if (tile != null) {
-                                empty = false;
-                                break boardSearch;
-                              }
-                            }
-                          }
-                        }
-
-                        if (empty) {
-                          showWinningDialog();
-                        } else {
-                          showShuffleDialog();
-                        }
-                      }
-                      setState(() {
-                        selectedX = null;
-                        selectedY = null;
-                        selectedZ = null;
-                      });
+                      checkIsBoardSolveable();
+                      setSelectedCoord(null, null, null);
                     } else {
-                      setState(() {
-                        this.selectedX = x;
-                        this.selectedY = y;
-                        this.selectedZ = z;
-                      });
+                      setSelectedCoord(x, y, z);
                     }
                   },
                 ))),
@@ -327,5 +269,62 @@ class _GamePageState extends State<GamePage> {
           ),
           child: body);
     });
+  }
+
+  setSelectedCoord(int? x, int? y, int? z) {
+    setState(() {
+      this.selectedX = x;
+      this.selectedY = y;
+      this.selectedZ = z;
+    });
+  }
+
+  checkIsBoardSolveable() {
+    final board = this.board;
+    if (board == null) return;
+
+    final newMovables = board.movable;
+    final Set<MahjongTile> tiles = {};
+    bool movesLeft = false;
+
+    for (var moveableCoord in newMovables) {
+      final tile =
+          board.tiles[moveableCoord.z][moveableCoord.y][moveableCoord.x]!;
+      final normalizedTile = isSeason(tile)
+          ? MahjongTile.SEASON_1
+          : isFlower(tile)
+              ? MahjongTile.FLOWER_1
+              : tile;
+      if (tiles.contains(normalizedTile)) {
+        movesLeft = true;
+        print("Pair of ${tileToString(tile)}");
+        break;
+      }
+      tiles.add(normalizedTile);
+    }
+
+    if (!movesLeft) {
+      final tiles = board.tiles;
+
+      var empty = true;
+
+      boardSearch:
+      for (var layer in tiles) {
+        for (var row in layer) {
+          for (var tile in row) {
+            if (tile != null) {
+              empty = false;
+              break boardSearch;
+            }
+          }
+        }
+      }
+
+      if (empty) {
+        showWinningDialog();
+      } else {
+        showShuffleDialog();
+      }
+    }
   }
 }
