@@ -51,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       context,
                       '${GamePage.Route}/${item.value.basename}',
                     );
+                    setState(() {});
                   },
                 );
               }).toList(),

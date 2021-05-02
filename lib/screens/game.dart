@@ -9,6 +9,7 @@ import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_flutter.dart';
 import 'package:ed_mahjong/preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
@@ -190,65 +191,113 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     final locale = PlatformDispatcher.instance.locale;
+    final layoutMeta = this.layoutMeta;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(layoutMeta == null
-            ? 'Ingame'
-            : layoutMeta!.name.toLocaleString(locale)),
+      drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            Container(
+                height: 50.0,
+                child: DrawerHeader(
+                  child: Text(layoutMeta == null
+                      ? 'Ingame'
+                      : "Ingame: ${layoutMeta.name.toLocaleString(locale)}"),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                  ),
+                )),
+            ListTile(
+              title: Text('Shuffle'),
+              onTap: () {
+                Navigator.pop(context);
+                shuffle();
+              },
+            ),
+            ListTile(
+              title: Text('Exit'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
-      body: renderBackground(Center(
-          child: board == null
-              ? Text("Loading...")
-              : Board(
-                  board: board!,
-                  meta: layoutMeta!,
-                  selectedX: selectedX,
-                  selectedY: selectedY,
-                  selectedZ: selectedZ,
-                  onSelected: (x, y, z) {
-                    final board = this.board!;
-                    final oldSelectedX = this.selectedX;
-                    final oldSelectedY = this.selectedY;
-                    final oldSelectedZ = this.selectedZ;
+      body: renderBackground(
+        Center(
+            child: board == null
+                ? Text("Loading...")
+                : Board(
+                    board: board!,
+                    meta: layoutMeta!,
+                    selectedX: selectedX,
+                    selectedY: selectedY,
+                    selectedZ: selectedZ,
+                    onSelected: (x, y, z) {
+                      final board = this.board!;
+                      final oldSelectedX = this.selectedX;
+                      final oldSelectedY = this.selectedY;
+                      final oldSelectedZ = this.selectedZ;
 
-                    if (x == oldSelectedX &&
-                        y == oldSelectedY &&
-                        z == oldSelectedZ) return;
+                      if (x == oldSelectedX &&
+                          y == oldSelectedY &&
+                          z == oldSelectedZ) return;
 
-                    final coord = Coordinate(x, y, z);
-                    if (!board.movable.contains(coord)) return;
+                      final coord = Coordinate(x, y, z);
+                      if (!board.movable.contains(coord)) return;
 
-                    if (oldSelectedX == null ||
-                        oldSelectedY == null ||
-                        oldSelectedZ == null) {
-                      setSelectedCoord(x, y, z);
-                      return;
-                    }
+                      if (oldSelectedX == null ||
+                          oldSelectedY == null ||
+                          oldSelectedZ == null) {
+                        setSelectedCoord(x, y, z);
+                        return;
+                      }
 
-                    final selected =
-                        board.tiles[oldSelectedZ][oldSelectedY][oldSelectedX];
-                    final newTile = board.tiles[z][y][x];
+                      final selected =
+                          board.tiles[oldSelectedZ][oldSelectedY][oldSelectedX];
+                      final newTile = board.tiles[z][y][x];
 
-                    if (selected != null &&
-                        newTile != null &&
-                        tilesMatch(selected, newTile)) {
-                      setState(() {
-                        board.update((tiles) {
-                          tiles[oldSelectedZ][oldSelectedY][oldSelectedX] =
-                              null;
-                          tiles[z][y][x] = null;
+                      if (selected != null &&
+                          newTile != null &&
+                          tilesMatch(selected, newTile)) {
+                        setState(() {
+                          board.update((tiles) {
+                            tiles[oldSelectedZ][oldSelectedY][oldSelectedX] =
+                                null;
+                            tiles[z][y][x] = null;
+                          });
                         });
-                      });
 
-                      checkIsBoardSolveable();
-                      setSelectedCoord(null, null, null);
-                    } else {
-                      setSelectedCoord(x, y, z);
-                    }
-                  },
-                ))),
+                        checkIsBoardSolveable();
+                        setSelectedCoord(null, null, null);
+                      } else {
+                        setSelectedCoord(x, y, z);
+                      }
+                    },
+                  )),
+      ),
+      floatingActionButton: Builder(
+          builder: (context) => FloatingActionButton(
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                tooltip: 'Menu',
+                child: Icon(Icons.menu),
+              )),
     );
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    super.dispose();
   }
 
   Widget renderBackground(Widget body) {
