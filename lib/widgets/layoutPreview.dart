@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
+import 'package:flutter/material.dart';
 
 class LayoutPreview extends StatefulWidget {
   final LayoutMeta layoutMeta;
@@ -66,12 +66,14 @@ class _LayoutPreviewState extends State<LayoutPreview> {
     ));
 
     final layout = this.layout;
+    final Brightness brightnessValue =
+        MediaQuery.of(context).platformBrightness;
 
     return Stack(
       children: [
         layout != null
             ? CustomPaint(
-                painter: LayoutPreviewPainter(layout),
+                painter: LayoutPreviewPainter(layout, brightnessValue),
                 child: text,
               )
             : text,
@@ -81,10 +83,13 @@ class _LayoutPreviewState extends State<LayoutPreview> {
 }
 
 class LayoutPreviewPainter extends CustomPainter {
-  static const color = Color(0xFFAAAAAA);
+  static const lightColor = Color(0x33000000);
+  static const darkColor = Color(0x33FFFFFF);
+
+  final Brightness brightnessValue;
   final List<List<List<bool>>> layout;
 
-  LayoutPreviewPainter(this.layout);
+  LayoutPreviewPainter(this.layout, this.brightnessValue);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -97,7 +102,8 @@ class LayoutPreviewPainter extends CustomPainter {
     final tileHWidth = tileWidth / 2;
     final tileHHeight = tileHeight / 2;
 
-    final paint = Paint()..color = color;
+    final paint = Paint()
+      ..color = (brightnessValue == Brightness.light ? lightColor : darkColor);
 
     for (var layer in layout) {
       for (var y = 0; y < yCount; ++y) {
