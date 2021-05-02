@@ -1,4 +1,4 @@
-# ed_mahjong
+# ED Mahjong
 
 An open, ad free, mahjong game, written in flutter.
 
