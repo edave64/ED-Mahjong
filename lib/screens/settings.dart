@@ -10,6 +10,7 @@ import 'package:ed_mahjong/widgets/tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   static const Route = '/settings';
@@ -49,14 +50,27 @@ class _SettingsPageState extends State<SettingsPage> {
                 ...tilesetListTiles(preferences, tilesets),
                 ...backgroundListTiles(preferences, backgrounds),
                 ListTile(
+                  leading: Text("Maximum retries: "),
                   title: Row(
                     children: [
-                      Text("Maximum retries: "),
                       TextButton(onPressed: () {}, child: Icon(Icons.remove)),
                       Text("Infinite"),
                       TextButton(onPressed: () {}, child: Icon(Icons.add)),
                     ],
                   ),
+                ),
+                ListTile(
+                  title: Text("About"),
+                  onTap: () {
+                    showAboutDialog(context: context, children: [
+                      Text(
+                          "An ad-free, open-source Mahjong Solitaire implementation."),
+                      TextButton(
+                          onPressed: () =>
+                              launch("https://github.com/edave64/ED-Mahjong"),
+                          child: Text("View source"))
+                    ]);
+                  },
                 ),
               ],
             );
