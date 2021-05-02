@@ -46,6 +46,7 @@ class _LayoutPreviewState extends State<LayoutPreview> {
         // Stroked text as border.
         Text(
           label,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             fontSize: 20,
             foreground: Paint()
@@ -57,6 +58,7 @@ class _LayoutPreviewState extends State<LayoutPreview> {
         // Solid text as fill.
         Text(
           label,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             fontSize: 20,
             color: Colors.black,
