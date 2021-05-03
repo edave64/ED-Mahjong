@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 
 class LayoutPreview extends StatefulWidget {
   final LayoutMeta layoutMeta;
+  final int? time;
 
   LayoutPreview({
     Key? key,
     required this.layoutMeta,
+    required this.time,
   }) : super(key: key);
 
   @override
@@ -70,6 +72,7 @@ class _LayoutPreviewState extends State<LayoutPreview> {
     final layout = this.layout;
     final Brightness brightnessValue =
         MediaQuery.of(context).platformBrightness;
+    final time = widget.time;
 
     return Stack(
       children: [
@@ -79,9 +82,28 @@ class _LayoutPreviewState extends State<LayoutPreview> {
                 child: text,
               )
             : text,
+        if (time != null)
+          Positioned(
+            child: Text(timeToString(time)),
+            bottom: 0,
+            right: 0,
+          )
       ],
     );
   }
+}
+
+timeToString(int givenMilliSeconds) {
+  final givenSeconds = givenMilliSeconds / 1000;
+  final hours = (givenSeconds / 3600).floor();
+  final minutes = ((givenSeconds - (hours * 3600)) / 60).floor();
+  final seconds = givenSeconds - (hours * 3600) - (minutes * 60);
+
+  return hours.toString().padLeft(2, '0') +
+      ':' +
+      minutes.toString().padLeft(2, '0') +
+      ':' +
+      seconds.round().toString().padLeft(2, '0');
 }
 
 class LayoutPreviewPainter extends CustomPainter {

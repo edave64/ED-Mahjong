@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:ed_mahjong/engine/highscore_storage.dart';
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/screens/game.dart';
 import 'package:ed_mahjong/widgets/layoutPreview.dart';
@@ -15,8 +16,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Map<String, int>? _times;
+
+  _MyHomePageState() {
+    loadInit();
+  }
+
+  loadInit() async {
+    final times = await HighscoreDB.instance.getTimes();
+    setState(() {
+      _times = times;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final times = _times ?? {};
     return Scaffold(
       appBar: AppBar(
         title: Text('ED Mahjong'),
@@ -45,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return InkWell(
                   child: LayoutPreview(
                     layoutMeta: item.value,
+                    time: times[item.value.basename],
                   ),
                   onTap: () {
                     Navigator.pushNamed(

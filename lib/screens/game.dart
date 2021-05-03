@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:ed_mahjong/engine/backgrounds/background_meta.dart';
+import 'package:ed_mahjong/engine/highscore_storage.dart';
 import 'package:ed_mahjong/engine/layouts/layout.dart';
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/engine/layouts/top_down_generator.dart';
@@ -8,6 +9,7 @@ import 'package:ed_mahjong/engine/pieces/game_board.dart';
 import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_flutter.dart';
 import 'package:ed_mahjong/preferences.dart';
+import 'package:ed_mahjong/widgets/layoutPreview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
@@ -40,6 +42,7 @@ class _GamePageState extends State<GamePage> {
   int? selectedY;
   int? selectedZ;
 
+  int? startAt;
   int shuffles = 0;
   int maxShuffles = -1;
 
@@ -92,11 +95,12 @@ class _GamePageState extends State<GamePage> {
     try {
       b = makeBoard(layout, precalc);
     } catch (e) {
-      showLoosingDialog("The layout is impossible to solve");
+      await showLoosingDialog("The layout is impossible to solve");
       return;
     }
 
     setState(() {
+      this.startAt = DateTime.now().millisecondsSinceEpoch;
       this.layoutMeta = layoutMeta;
       print("Rebuilding board from ${layoutMeta.name}");
       board = b;
@@ -128,7 +132,7 @@ class _GamePageState extends State<GamePage> {
     try {
       newBoard = makeBoard(layout, precalc, tileSupply);
     } catch (e) {
-      showLoosingDialog("The game has become unsolvable");
+      await showLoosingDialog("The game has become unsolvable");
       return;
     }
 
@@ -138,13 +142,25 @@ class _GamePageState extends State<GamePage> {
     });
   }
 
-  showWinningDialog() {
+  showWinningDialog() async {
+    final finalTime =
+        DateTime.now().millisecondsSinceEpoch - (this.startAt ?? 0);
+    final times = await HighscoreDB.instance.getTimes();
+    int? existingTime = times[widget.layout];
+    bool highScore = existingTime == null || existingTime > finalTime;
+
+    if (highScore) {
+      await HighscoreDB.instance.set(widget.layout, finalTime);
+    }
+
     showDialog(
       context: this.context,
       builder: (BuildContext context) {
         return AlertDialog(
           content: Text(
-            "You won!",
+            highScore
+                ? "Congratulations! You set a new best time: ${timeToString(finalTime)}"
+                : "You won!",
           ),
           actions: <Widget>[
             TextButton(
@@ -159,7 +175,7 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  showLoosingDialog(String reason) {
+  showLoosingDialog(String reason) async {
     showDialog(
       context: this.context,
       builder: (BuildContext context) {
@@ -178,7 +194,7 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  showShuffleDialog() {
+  showShuffleDialog() async {
     showDialog(
       context: this.context,
       builder: (BuildContext context) {
@@ -337,7 +353,7 @@ class _GamePageState extends State<GamePage> {
     });
   }
 
-  checkIsBoardSolveable() {
+  checkIsBoardSolveable() async {
     final board = this.board;
     if (board == null) return;
 
@@ -379,9 +395,9 @@ class _GamePageState extends State<GamePage> {
       }
 
       if (empty) {
-        showWinningDialog();
+        await showWinningDialog();
       } else {
-        showShuffleDialog();
+        await showShuffleDialog();
       }
     }
   }
