@@ -23,6 +23,8 @@ class Preferences {
   static const TilesetProp = "ed:mahjong:tileset";
   static const TilesetDefault = "default.desktop";
   static const BackgroundProp = "ed:mahjong:background";
+  static const ShufflesProp = "ed:mahjong:shuffles";
+  static const ShufflesDefault = 1;
   static const String? BackgroundDefault = null;
 
   String get tileset {
@@ -43,5 +45,13 @@ class Preferences {
       return;
     }
     sharedPrefs.setString(BackgroundProp, background);
+  }
+
+  int get maxShuffles {
+    return sharedPrefs.getInt(ShufflesProp) ?? ShufflesDefault;
+  }
+
+  set maxShuffles(int maxShuffles) {
+    sharedPrefs.setInt(ShufflesProp, maxShuffles);
   }
 }

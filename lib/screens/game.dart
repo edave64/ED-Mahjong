@@ -40,6 +40,9 @@ class _GamePageState extends State<GamePage> {
   int? selectedY;
   int? selectedZ;
 
+  int shuffles = 0;
+  int maxShuffles = -1;
+
   _GamePageState();
 
   @override
@@ -53,7 +56,6 @@ class _GamePageState extends State<GamePage> {
   @override
   void didUpdateWidget(GamePage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    print("update widget");
     if (widget.layout != oldWidget.layout) {
       setState(() {
         board = null;
@@ -102,6 +104,11 @@ class _GamePageState extends State<GamePage> {
   }
 
   Future<void> shuffle() async {
+    if (!canShuffle) {
+      await showLoosingDialog("You don't have any shuffles left");
+      return;
+    }
+
     final board = this.board!;
     final layout = board.layout;
 
@@ -126,6 +133,7 @@ class _GamePageState extends State<GamePage> {
     }
 
     setState(() {
+      this.shuffles++;
       this.board = newBoard;
     });
   }
@@ -214,6 +222,7 @@ class _GamePageState extends State<GamePage> {
                   ),
                 )),
             ListTile(
+              enabled: canShuffle,
               title: Text('Shuffle'),
               onTap: () {
                 Navigator.pop(context);
@@ -375,5 +384,15 @@ class _GamePageState extends State<GamePage> {
         showShuffleDialog();
       }
     }
+  }
+
+  bool get canShuffle {
+    if (maxShuffles == -1) return true;
+    return shuffles < maxShuffles;
+  }
+
+  int get shuffleLeft {
+    if (maxShuffles == -1) return -1;
+    return maxShuffles - shuffles;
   }
 }

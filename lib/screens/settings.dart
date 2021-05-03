@@ -51,13 +51,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ...backgroundListTiles(preferences, backgrounds),
                 ListTile(
                   leading: Text("Maximum retries: "),
-                  title: Row(
-                    children: [
-                      TextButton(onPressed: () {}, child: Icon(Icons.remove)),
-                      Text("Infinite"),
-                      TextButton(onPressed: () {}, child: Icon(Icons.add)),
-                    ],
-                  ),
+                  title: retryButtons(preferences),
                 ),
                 ListTile(
                   title: Text("About"),
@@ -76,6 +70,32 @@ class _SettingsPageState extends State<SettingsPage> {
             );
           },
         ));
+  }
+
+  Widget retryButtons(Preferences? preferences) {
+    if (preferences == null) return Text("");
+
+    final count = preferences.maxShuffles;
+
+    return Row(
+      children: [
+        TextButton(
+            onPressed: count == -1
+                ? null
+                : () {
+                    preferences.maxShuffles--;
+                    setState(() {});
+                  },
+            child: Icon(Icons.remove)),
+        Text(count == -1 ? "Infinite" : "$count"),
+        TextButton(
+            onPressed: () {
+              preferences.maxShuffles++;
+              setState(() {});
+            },
+            child: Icon(Icons.add)),
+      ],
+    );
   }
 
   Iterable<ListTile> tilesetListTiles(
