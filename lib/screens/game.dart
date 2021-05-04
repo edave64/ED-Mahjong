@@ -101,6 +101,7 @@ class _GamePageState extends State<GamePage> {
 
     setState(() {
       this.startAt = DateTime.now().millisecondsSinceEpoch;
+      this.maxShuffles = preferences.maxShuffles;
       this.layoutMeta = layoutMeta;
       print("Rebuilding board from ${layoutMeta.name}");
       board = b;
