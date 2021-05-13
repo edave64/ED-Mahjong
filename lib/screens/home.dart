@@ -23,7 +23,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   loadInit() async {
-    final times = await HighscoreDB.instance.getTimes();
+    final times = await highscoreDB.getTimes();
+    highscoreDB.onChange(() {
+      setState(() {});
+    });
     setState(() {
       _times = times;
     });
@@ -53,7 +56,6 @@ class _MyHomePageState extends State<MyHomePage> {
           });
           return LayoutBuilder(builder: (context, contraints) {
             final cols = max((contraints.maxWidth / 150).floor(), 2);
-            print(cols);
             return GridView.count(
               crossAxisCount: cols,
               children: list.map((item) {

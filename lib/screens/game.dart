@@ -51,8 +51,6 @@ class _GamePageState extends State<GamePage> {
   @override
   initState() {
     super.initState();
-    print(widget.layout);
-
     loadInit().catchError((error) {});
   }
 
@@ -103,7 +101,6 @@ class _GamePageState extends State<GamePage> {
       this.startAt = DateTime.now().millisecondsSinceEpoch;
       this.maxShuffles = preferences.maxShuffles;
       this.layoutMeta = layoutMeta;
-      print("Rebuilding board from ${layoutMeta.name}");
       board = b;
     });
   }
@@ -146,12 +143,12 @@ class _GamePageState extends State<GamePage> {
   showWinningDialog() async {
     final finalTime =
         DateTime.now().millisecondsSinceEpoch - (this.startAt ?? 0);
-    final times = await HighscoreDB.instance.getTimes();
+    final times = await highscoreDB.getTimes();
     int? existingTime = times[widget.layout];
     bool highScore = existingTime == null || existingTime > finalTime;
 
     if (highScore) {
-      await HighscoreDB.instance.set(widget.layout, finalTime);
+      await highscoreDB.set(widget.layout, finalTime);
     }
 
     showDialog(
@@ -372,7 +369,6 @@ class _GamePageState extends State<GamePage> {
               : tile;
       if (tiles.contains(normalizedTile)) {
         movesLeft = true;
-        print("Pair of ${tileToString(tile)}");
         break;
       }
       tiles.add(normalizedTile);
