@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:ed_mahjong/engine/highscore_storage.dart';
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/screens/game.dart';
-import 'package:ed_mahjong/widgets/layoutPreview.dart';
+import 'package:ed_mahjong/widgets/layout_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

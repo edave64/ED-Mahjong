@@ -9,7 +9,7 @@ import 'package:ed_mahjong/engine/pieces/game_board.dart';
 import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_flutter.dart';
 import 'package:ed_mahjong/preferences.dart';
-import 'package:ed_mahjong/widgets/layoutPreview.dart';
+import 'package:ed_mahjong/widgets/layout_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
@@ -408,4 +408,13 @@ class _GamePageState extends State<GamePage> {
     if (maxShuffles == -1) return -1;
     return maxShuffles - shuffles;
   }
+}
+
+class HistoryState {
+  final MahjongTile tile1;
+  final Coordinate tile1Coord;
+  final MahjongTile tile2;
+  final Coordinate tile2Coord;
+
+  HistoryState(this.tile1, this.tile1Coord, this.tile2, this.tile2Coord);
 }
