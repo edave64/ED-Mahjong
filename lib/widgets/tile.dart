@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
@@ -12,12 +15,14 @@ class Tile extends StatelessWidget {
       required this.tilesetMeta,
       required this.selected,
       this.onTap,
-      this.text})
+      this.text,
+      this.highlight})
       : super(key: key);
 
   final MahjongTile type;
   final TilesetMeta tilesetMeta;
   final bool selected;
+  final Color? highlight;
   final Tap? onTap;
   final String? text;
 
@@ -35,11 +40,22 @@ class Tile extends StatelessWidget {
             child: Stack(
               alignment: AlignmentDirectional.topEnd,
               children: [
-                Image.asset(
-                  '$baseUrl/${selected ? "TILE_1_SEL" : "TILE_1"}.png',
-                ),
+                tinted(
+                    selected ? null : highlight,
+                    Image.asset(
+                      '$baseUrl/${selected ? "TILE_1_SEL" : "TILE_1"}.png',
+                    )),
                 Image.asset('$baseUrl/${tileToString(type)}.png'),
               ],
             ));
+  }
+
+  Widget tinted(Color? color, Widget child) {
+    if (color == null) return child;
+    return ShaderMask(
+      child: child,
+      shaderCallback: (rect) =>
+          LinearGradient(colors: [color, color]).createShader(rect),
+    );
   }
 }

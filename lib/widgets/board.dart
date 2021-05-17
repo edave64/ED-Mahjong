@@ -1,3 +1,4 @@
+import 'package:ed_mahjong/engine/layouts/layout.dart';
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/engine/pieces/game_board.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
@@ -31,10 +32,11 @@ class Board extends StatelessWidget {
     return Consumer2<TilesetMetaCollection?, Preferences?>(builder: (context,
         TilesetMetaCollection? tilesetMetas, Preferences? preferences, child) {
       if (tilesetMetas == null || preferences == null) return Text("Loading");
+      final highlightMovables = preferences.highlightMovables;
       final tileset = tilesetMetas.get(preferences.tileset);
-
       final halfTileW = tileset.tileFaceWidth / 2;
       final halfTileH = tileset.tileFaceHeight / 2;
+      final Set<Coordinate> highlight = highlightMovables ? board.movable : {};
 
       return FittedBox(
           child: SizedBox(
@@ -52,6 +54,7 @@ class Board extends StatelessWidget {
                       z: z,
                       meta: meta,
                       tileset: tileset,
+                      highlight: highlight,
                       selectedX: selectedZ == z ? selectedX : null,
                       selectedY: selectedZ == z ? selectedY : null,
                       onSelected: (x, y, z) {

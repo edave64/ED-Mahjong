@@ -1,3 +1,4 @@
+import 'package:ed_mahjong/engine/layouts/layout.dart';
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
@@ -16,6 +17,7 @@ class TileLayer extends StatelessWidget {
   final int? selectedX;
   final int? selectedY;
   final Selected? onSelected;
+  final Set<Coordinate> highlight;
 
   TileLayer(
       {Key? key,
@@ -23,6 +25,7 @@ class TileLayer extends StatelessWidget {
       required this.meta,
       required this.tileset,
       required this.z,
+      required this.highlight,
       this.selectedX,
       this.selectedY,
       this.onSelected})
@@ -64,10 +67,12 @@ class TileLayer extends StatelessWidget {
       final yPos = y;
       final tile = tiles[yPos][xPos];
       if (tile == null) continue;
+      final coord = Coordinate(xPos, yPos, z);
+
       childTiles.add(Positioned(
           left: halfTileW * xPos,
           top: halfTileH * yPos,
-          child: makeTile(xPos, yPos, tile)));
+          child: makeTile(xPos, yPos, tile, highlight.contains(coord))));
     }
 
     return SizedBox(
@@ -76,11 +81,12 @@ class TileLayer extends StatelessWidget {
         child: Stack(children: childTiles));
   }
 
-  Tile makeTile(int x, int y, MahjongTile tile) {
+  Tile makeTile(int x, int y, MahjongTile tile, bool highlight) {
     return Tile(
       tilesetMeta: tileset,
       selected: selectedX == x && selectedY == y,
       type: tile,
+      highlight: highlight ? Colors.lightBlueAccent : null,
       onTap: () {
         final selected = onSelected;
         if (selected != null) selected(x, y, z);

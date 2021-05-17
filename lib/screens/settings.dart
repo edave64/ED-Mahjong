@@ -53,6 +53,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   leading: Text("Maximum retries: "),
                   title: retryButtons(preferences),
                 ),
+                CheckboxListTile(
+                  title: Text("Highlight moveable tiles: "),
+                  value: preferences.highlightMovables,
+                  onChanged: (val) {
+                    preferences.highlightMovables = val ?? false;
+                    setState(() {});
+                  },
+                ),
                 ListTile(
                   title: Text("About"),
                   onTap: () {

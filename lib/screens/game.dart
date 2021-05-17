@@ -37,6 +37,7 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   GameBoard? board;
   LayoutMeta? layoutMeta;
+  List<HistoryState> history = [];
   bool ready = false;
   int? selectedX;
   int? selectedY;
@@ -291,6 +292,12 @@ class _GamePageState extends State<GamePage> {
                           newTile != null &&
                           tilesMatch(selected, newTile)) {
                         setState(() {
+                          history.add(HistoryState(
+                              selected,
+                              Coordinate(
+                                  oldSelectedX, oldSelectedY, oldSelectedZ),
+                              newTile,
+                              Coordinate(x, y, z)));
                           board.update((tiles) {
                             tiles[oldSelectedZ][oldSelectedY][oldSelectedX] =
                                 null;
