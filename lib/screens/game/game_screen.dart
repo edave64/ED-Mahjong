@@ -8,7 +8,9 @@ import 'package:ed_mahjong/engine/layouts/top_down_generator.dart';
 import 'package:ed_mahjong/engine/pieces/game_board.dart';
 import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_flutter.dart';
+import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
 import 'package:ed_mahjong/preferences.dart';
+import 'package:ed_mahjong/screens/game/history_drawer.dart';
 import 'package:ed_mahjong/screens/game/menu_drawer.dart';
 import 'package:ed_mahjong/widgets/layout_preview.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +40,7 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   GameBoard? board;
   LayoutMeta? layoutMeta;
+  TilesetMeta? tilesetMeta;
   List<HistoryState> history = [];
   bool ready = false;
   int? selectedX;
@@ -103,6 +106,7 @@ class _GamePageState extends State<GamePage> {
       this.startAt = DateTime.now().millisecondsSinceEpoch;
       this.maxShuffles = preferences.maxShuffles;
       this.layoutMeta = layoutMeta;
+      this.tilesetMeta = tileset;
       board = b;
     });
   }
@@ -139,6 +143,7 @@ class _GamePageState extends State<GamePage> {
     setState(() {
       this.shuffles++;
       this.board = newBoard;
+      this.history = [];
     });
   }
 
@@ -217,12 +222,20 @@ class _GamePageState extends State<GamePage> {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
     final locale = PlatformDispatcher.instance.locale;
+    final tilesetMeta = this.tilesetMeta;
     final layoutMeta = this.layoutMeta;
     return Scaffold(
       drawer: MenuDrawer(
           canShuffle: canShuffle,
           layoutName: layoutMeta?.name.toLocaleString(locale),
           shuffle: shuffle),
+      endDrawer: tilesetMeta == null
+          ? null
+          : HistoryDrawer(
+              tilesetMeta: tilesetMeta,
+              history: history,
+              restore: restore,
+            ),
       body: renderBackground(
         Center(
             child: board == null
@@ -283,13 +296,28 @@ class _GamePageState extends State<GamePage> {
                   )),
       ),
       floatingActionButton: Builder(
-          builder: (context) => FloatingActionButton(
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-                tooltip: 'Menu',
-                child: Icon(Icons.menu),
-              )),
+          builder: (context) => Row(mainAxisSize: MainAxisSize.min, children: [
+                FloatingActionButton(
+                  heroTag: "menuBtn",
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  tooltip: 'Menu',
+                  child: Icon(Icons.menu),
+                ),
+                Container(
+                  width: 20,
+                  height: 0,
+                ),
+                FloatingActionButton(
+                  heroTag: "historyBtn",
+                  onPressed: () {
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                  tooltip: 'History',
+                  child: Icon(Icons.history),
+                )
+              ])),
     );
   }
 
@@ -384,13 +412,23 @@ class _GamePageState extends State<GamePage> {
     if (maxShuffles == -1) return -1;
     return maxShuffles - shuffles;
   }
-}
 
-class HistoryState {
-  final MahjongTile tile1;
-  final Coordinate tile1Coord;
-  final MahjongTile tile2;
-  final Coordinate tile2Coord;
+  restore(HistoryState state) {
+    var idx = history.indexOf(state);
+    var historyStates = history.skip(idx).toList().reversed;
 
-  HistoryState(this.tile1, this.tile1Coord, this.tile2, this.tile2Coord);
+    if (idx == -1) return;
+
+    setState(() {
+      board!.update((tiles) {
+        for (var state in historyStates) {
+          tiles[state.tile1Coord.z][state.tile1Coord.y][state.tile1Coord.x] =
+              state.tile1;
+          tiles[state.tile2Coord.z][state.tile2Coord.y][state.tile2Coord.x] =
+              state.tile2;
+        }
+      });
+      this.history = this.history.take(idx).toList();
+    });
+  }
 }

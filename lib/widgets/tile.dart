@@ -30,24 +30,24 @@ class Tile extends StatelessWidget {
   Widget build(BuildContext context) {
     final baseUrl =
         'assets/tilesets/${basenameWithoutExtension(tilesetMeta.fileName)}';
-    return /*Text(text ??
-            "")*/
-        GestureDetector(
-            onTap: () {
-              final tap = onTap;
-              if (tap != null) tap();
-            },
-            child: Stack(
-              alignment: AlignmentDirectional.topEnd,
-              children: [
-                tinted(
-                    selected ? null : highlight,
-                    Image.asset(
-                      '$baseUrl/${selected ? "TILE_1_SEL" : "TILE_1"}.png',
-                    )),
-                Image.asset('$baseUrl/${tileToString(type)}.png'),
-              ],
-            ));
+    return tapable(
+        onTap,
+        Stack(
+          alignment: AlignmentDirectional.topEnd,
+          children: [
+            tinted(
+                selected ? null : highlight,
+                Image.asset(
+                  '$baseUrl/${selected ? "TILE_1_SEL" : "TILE_1"}.png',
+                )),
+            Image.asset('$baseUrl/${tileToString(type)}.png'),
+          ],
+        ));
+  }
+
+  Widget tapable(Tap? onTap, Widget child) {
+    if (onTap == null) return child;
+    return GestureDetector(onTap: onTap, child: child);
   }
 
   Widget tinted(Color? color, Widget child) {
