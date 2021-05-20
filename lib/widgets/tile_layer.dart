@@ -17,19 +17,21 @@ class TileLayer extends StatelessWidget {
   final int? selectedX;
   final int? selectedY;
   final Selected? onSelected;
-  final Set<Coordinate> highlight;
+  final Set<Coordinate> movable;
+  final bool highlightMovables;
 
-  TileLayer(
-      {Key? key,
-      required this.tiles,
-      required this.meta,
-      required this.tileset,
-      required this.z,
-      required this.highlight,
-      this.selectedX,
-      this.selectedY,
-      this.onSelected})
-      : height = tiles.length,
+  TileLayer({
+    Key? key,
+    required this.tiles,
+    required this.meta,
+    required this.tileset,
+    required this.z,
+    required this.movable,
+    required this.highlightMovables,
+    this.selectedX,
+    this.selectedY,
+    this.onSelected,
+  })  : height = tiles.length,
         width = tiles[0].length,
         super(key: key);
 
@@ -72,7 +74,7 @@ class TileLayer extends StatelessWidget {
       childTiles.add(Positioned(
           left: halfTileW * xPos,
           top: halfTileH * yPos,
-          child: makeTile(xPos, yPos, tile, highlight.contains(coord))));
+          child: makeTile(xPos, yPos, tile, movable.contains(coord))));
     }
 
     return SizedBox(
@@ -81,16 +83,22 @@ class TileLayer extends StatelessWidget {
         child: Stack(children: childTiles));
   }
 
-  Tile makeTile(int x, int y, MahjongTile tile, bool highlight) {
-    return Tile(
+  Widget makeTile(int x, int y, MahjongTile tile, bool movable) {
+    var tileW = Tile(
       tilesetMeta: tileset,
       selected: selectedX == x && selectedY == y,
       type: tile,
-      highlight: highlight ? Colors.lightBlueAccent : null,
-      onTap: () {
-        final selected = onSelected;
-        if (selected != null) selected(x, y, z);
-      },
+      highlight: movable && highlightMovables ? Colors.lightBlueAccent : null,
+      onTap: movable
+          ? () {
+              final selected = onSelected;
+              if (selected != null) selected(x, y, z);
+            }
+          : null,
     );
+    if (!movable) {
+      return IgnorePointer(child: tileW);
+    }
+    return tileW;
   }
 }
