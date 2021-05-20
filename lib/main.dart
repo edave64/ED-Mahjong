@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'screens/game.dart';
+import 'screens/game/game_screen.dart';
 import 'screens/home.dart';
-import 'screens/settings.dart';
+import 'screens/settings/settings_screen.dart';
 
 void main() {
   runApp(MyApp());

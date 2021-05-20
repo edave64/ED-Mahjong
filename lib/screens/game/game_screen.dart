@@ -9,13 +9,14 @@ import 'package:ed_mahjong/engine/pieces/game_board.dart';
 import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_flutter.dart';
 import 'package:ed_mahjong/preferences.dart';
+import 'package:ed_mahjong/screens/game/menu_drawer.dart';
 import 'package:ed_mahjong/widgets/layout_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/board.dart';
+import '../../widgets/board.dart';
 
 class GamePage extends StatefulWidget {
   static const Route = '/game';
@@ -218,42 +219,10 @@ class _GamePageState extends State<GamePage> {
     final locale = PlatformDispatcher.instance.locale;
     final layoutMeta = this.layoutMeta;
     return Scaffold(
-      drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            Container(
-                height: 50.0,
-                child: DrawerHeader(
-                  child: Text(layoutMeta == null
-                      ? 'Ingame'
-                      : "Ingame: ${layoutMeta.name.toLocaleString(locale)}"),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                  ),
-                )),
-            ListTile(
-              enabled: canShuffle,
-              title: Text('Shuffle'),
-              onTap: () {
-                Navigator.pop(context);
-                shuffle();
-              },
-            ),
-            ListTile(
-              title: Text('Exit'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: MenuDrawer(
+          canShuffle: canShuffle,
+          layoutName: layoutMeta?.name.toLocaleString(locale),
+          shuffle: shuffle),
       body: renderBackground(
         Center(
             child: board == null
