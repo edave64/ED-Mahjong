@@ -88,7 +88,7 @@ class TileLayer extends StatelessWidget {
       tilesetMeta: tileset,
       selected: selectedX == x && selectedY == y,
       type: tile,
-      highlight: movable && highlightMovables ? Colors.lightBlueAccent : null,
+      dark: highlightMovables && !movable,
       onTap: movable
           ? () {
               final selected = onSelected;

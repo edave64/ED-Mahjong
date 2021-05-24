@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,13 +14,13 @@ class Tile extends StatelessWidget {
       required this.selected,
       this.onTap,
       this.text,
-      this.highlight})
+      this.dark = false})
       : super(key: key);
 
   final MahjongTile type;
   final TilesetMeta tilesetMeta;
   final bool selected;
-  final Color? highlight;
+  final bool dark;
   final Tap? onTap;
   final String? text;
 
@@ -30,19 +28,29 @@ class Tile extends StatelessWidget {
   Widget build(BuildContext context) {
     final baseUrl =
         'assets/tilesets/${basenameWithoutExtension(tilesetMeta.fileName)}';
+
     return tapable(
         onTap,
         Stack(
           alignment: AlignmentDirectional.topEnd,
           children: [
-            tinted(
-                selected ? null : highlight,
-                Image.asset(
-                  '$baseUrl/${selected ? "TILE_1_SEL" : "TILE_1"}.png',
-                )),
+            darken(
+              dark,
+              Image.asset(
+                '$baseUrl/${selected ? "TILE_1_SEL" : "TILE_1"}.png',
+              ),
+            ),
             Image.asset('$baseUrl/${tileToString(type)}.png'),
           ],
         ));
+  }
+
+  Widget darken(bool darken, Widget child) {
+    if (!darken) return child;
+    return ColorFiltered(
+      child: child,
+      colorFilter: darkenFilter,
+    );
   }
 
   Widget tapable(Tap? onTap, Widget child) {
@@ -50,12 +58,26 @@ class Tile extends StatelessWidget {
     return GestureDetector(onTap: onTap, child: child);
   }
 
-  Widget tinted(Color? color, Widget child) {
-    if (color == null) return child;
-    return ShaderMask(
-      child: child,
-      shaderCallback: (rect) =>
-          LinearGradient(colors: [color, color]).createShader(rect),
-    );
-  }
+  static const ColorFilter darkenFilter = ColorFilter.matrix(<double>[
+    0.5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0.5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0.5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+  ]);
 }
