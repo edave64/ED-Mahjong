@@ -77,9 +77,11 @@ class _GamePageState extends State<GamePage> {
     final layoutMetas = await LayoutMetaCollection.load(this.context);
     final tilesetMetas = await loadTilesets(this.context);
     final layoutMeta = layoutMetas.get(widget.layout);
-    final layout = await layoutMeta.getLayout(this.context);
+    final baseLayout = await layoutMeta.getLayout(this.context);
     final preferences = await Preferences.instance;
     final tileset = tilesetMetas.get(preferences.tileset);
+
+    final layout = baseLayout.compress();
 
     final imgs = [
       "TILE_1",
