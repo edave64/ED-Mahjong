@@ -2,6 +2,7 @@ import 'package:ed_mahjong/engine/desktopFileReader/localizable_string.dart';
 import 'package:ed_mahjong/engine/desktopFileReader/parse_spec.dart';
 import 'package:ed_mahjong/engine/desktopFileReader/parser.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_renderer.dart';
+import 'package:ed_mahjong/widgets/tile_layer.dart';
 
 final parser = buildTilesetParser();
 
@@ -36,6 +37,9 @@ class TilesetMeta {
   final int tileWidth;
   final int tileHeight;
 
+  final double halfTileW;
+  final double halfTileH;
+
   TilesetMeta._(this.basename, Map<String, dynamic> desktopData)
       : name = desktopData[KName],
         description = desktopData[KDescription] ?? LocalizableString.empty,
@@ -47,7 +51,9 @@ class TilesetMeta {
         tileFaceWidth = desktopData[KTileFaceWidth],
         tileFaceHeight = desktopData[KTileFaceHeight],
         tileWidth = desktopData[KTileWidth],
-        tileHeight = desktopData[KTileHeight];
+        tileHeight = desktopData[KTileHeight],
+        halfTileH = desktopData[KTileFaceHeight] / 2,
+        halfTileW = desktopData[KTileFaceWidth] / 2;
 
   static TilesetMeta loadString(String basename, String contents) {
     final section = parser.parseSection(contents, KSectionName);
@@ -71,6 +77,26 @@ class TilesetMeta {
   Future<TilesetRenderer> getRenderer() async {
     return TilesetRenderer();
   }
+
+  Pos2D getPixelPos(Coord2D coord) {
+    return Pos2D(halfTileW * coord.x, halfTileH * coord.y);
+  }
+
+  Pos2D getPixelOffset(int z) {
+    return Pos2D(levelOffsetX * z * 1.0, levelOffsetY * z * 1.0);
+  }
+
+  Pos2D getLayoutSize(int width, int height) {
+    return Pos2D((halfTileW * (width + 2)) * 1.0 + (tileWidth - tileFaceWidth),
+        (halfTileH * (height + 1)) * 1.0 + (tileHeight - tileFaceHeight));
+  }
+}
+
+class Pos2D {
+  final double x;
+  final double y;
+
+  const Pos2D(this.x, this.y);
 }
 
 Parser buildTilesetParser() {

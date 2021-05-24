@@ -37,11 +37,46 @@ class TileLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final halfTileW = tileset.tileFaceWidth / 2;
-    final halfTileH = tileset.tileFaceHeight / 2;
-
     final List<Positioned> childTiles = [];
 
+    for (var coord2D in tileDrawOrder(height, width)) {
+      final tile = tiles[coord2D.y][coord2D.x];
+      if (tile == null) continue;
+      final coord3D = Coordinate(coord2D.x, coord2D.y, z);
+      final pos = tileset.getPixelPos(coord2D);
+
+      childTiles.add(Positioned(
+          left: pos.x,
+          top: pos.y,
+          child:
+              makeTile(coord2D.x, coord2D.y, tile, movable.contains(coord3D))));
+    }
+
+    final size = tileset.getLayoutSize(width, height);
+    return SizedBox(
+        width: size.x, height: size.y, child: Stack(children: childTiles));
+  }
+
+  Widget makeTile(int x, int y, MahjongTile tile, bool movable) {
+    var tileW = Tile(
+      tilesetMeta: tileset,
+      selected: selectedX == x && selectedY == y,
+      type: tile,
+      dark: highlightMovables && !movable,
+      onTap: movable
+          ? () {
+              final selected = onSelected;
+              if (selected != null) selected(x, y, z);
+            }
+          : null,
+    );
+    if (!movable) {
+      return IgnorePointer(child: tileW);
+    }
+    return tileW;
+  }
+
+  Iterable<Coord2D> tileDrawOrder(int height, int width) sync* {
     var x = 0;
     var y = 0;
     for (var i = 0; i < height * width; ++i) {
@@ -65,40 +100,14 @@ class TileLayer extends StatelessWidget {
           }
         }
       }
-      final xPos = width - x - 1;
-      final yPos = y;
-      final tile = tiles[yPos][xPos];
-      if (tile == null) continue;
-      final coord = Coordinate(xPos, yPos, z);
-
-      childTiles.add(Positioned(
-          left: halfTileW * xPos,
-          top: halfTileH * yPos,
-          child: makeTile(xPos, yPos, tile, movable.contains(coord))));
+      yield Coord2D(width - x - 1, y);
     }
-
-    return SizedBox(
-        width: (halfTileW * (width + 1)) * 1.0,
-        height: (halfTileH * (height + 1)) * 1.0,
-        child: Stack(children: childTiles));
   }
+}
 
-  Widget makeTile(int x, int y, MahjongTile tile, bool movable) {
-    var tileW = Tile(
-      tilesetMeta: tileset,
-      selected: selectedX == x && selectedY == y,
-      type: tile,
-      dark: highlightMovables && !movable,
-      onTap: movable
-          ? () {
-              final selected = onSelected;
-              if (selected != null) selected(x, y, z);
-            }
-          : null,
-    );
-    if (!movable) {
-      return IgnorePointer(child: tileW);
-    }
-    return tileW;
-  }
+class Coord2D {
+  final int x;
+  final int y;
+
+  const Coord2D(this.x, this.y);
 }

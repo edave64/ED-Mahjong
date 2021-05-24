@@ -30,18 +30,17 @@ class Board extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<TilesetMetaCollection?, Preferences?>(builder: (context,
         TilesetMetaCollection? tilesetMetas, Preferences? preferences, child) {
-      if (tilesetMetas == null || preferences == null) return Text("Loading");
+      if (tilesetMetas == null || preferences == null)
+        return Text("Loading...");
       final highlightMovables = preferences.highlightMovables;
       final tileset = tilesetMetas.get(preferences.tileset);
-      final halfTileW = tileset.tileFaceWidth / 2;
-      final halfTileH = tileset.tileFaceHeight / 2;
+
+      final singleLayerSize = tileset.getLayoutSize(board.width, board.height);
 
       return FittedBox(
           child: SizedBox(
-              width: (halfTileW * (board.width + 1)) +
-                  tileset.levelOffsetX * board.depth,
-              height: (halfTileH * (board.height + 1)) +
-                  tileset.levelOffsetY * board.depth,
+              width: singleLayerSize.x + tileset.levelOffsetX * board.depth,
+              height: singleLayerSize.y + tileset.levelOffsetY * board.depth,
               child: Stack(
                   children: List.generate(board.depth, (z) {
                 return Positioned(
