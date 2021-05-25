@@ -13,6 +13,7 @@ import 'package:ed_mahjong/preferences.dart';
 import 'package:ed_mahjong/screens/game/history_drawer.dart';
 import 'package:ed_mahjong/screens/game/menu_drawer.dart';
 import 'package:ed_mahjong/widgets/layout_preview.dart';
+import 'package:ed_mahjong/widgets/tile_animation_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
@@ -220,12 +221,25 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
+  TileAnimationLayer? _tileAnimationLayer;
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
     final locale = PlatformDispatcher.instance.locale;
     final tilesetMeta = this.tilesetMeta;
     final layoutMeta = this.layoutMeta;
+
+    TileAnimationLayer? tileAnimationLayer = this._tileAnimationLayer;
+    if (layoutMeta != null &&
+        tilesetMeta != null &&
+        tileAnimationLayer == null) {
+      this._tileAnimationLayer = tileAnimationLayer = TileAnimationLayer(
+        tilesetMeta: tilesetMeta,
+        depth: this.board!.depth,
+      );
+    }
+
     return Scaffold(
       drawer: MenuDrawer(
           canShuffle: canShuffle,
@@ -248,6 +262,7 @@ class _GamePageState extends State<GamePage> {
                     selectedX: selectedX,
                     selectedY: selectedY,
                     selectedZ: selectedZ,
+                    tileAnimationLayer: tileAnimationLayer!,
                     onSelected: (x, y, z) {
                       final board = this.board!;
                       final oldSelectedX = this.selectedX;
@@ -276,13 +291,17 @@ class _GamePageState extends State<GamePage> {
                           newTile != null &&
                           tilesMatch(selected, newTile)) {
                         setState(() {
+                          final oldCoord = Coordinate(
+                              oldSelectedX, oldSelectedY, oldSelectedZ);
+                          final newCoord = Coordinate(x, y, z);
                           history.add(HistoryState(
-                              selected,
-                              Coordinate(
-                                  oldSelectedX, oldSelectedY, oldSelectedZ),
-                              newTile,
-                              Coordinate(x, y, z)));
+                              selected, oldCoord, newTile, newCoord));
+
                           board.update((tiles) {
+                            tileAnimationLayer!.createAnimation(selected,
+                                oldCoord, getTileDirection(board, oldCoord));
+                            tileAnimationLayer.createAnimation(newTile,
+                                newCoord, getTileDirection(board, newCoord));
                             tiles[oldSelectedZ][oldSelectedY][oldSelectedX] =
                                 null;
                             tiles[z][y][x] = null;
@@ -321,6 +340,27 @@ class _GamePageState extends State<GamePage> {
                 )
               ])),
     );
+  }
+
+  FlyDirection getTileDirection(GameBoard board, Coordinate coord) {
+    if (coord.x < 2) return FlyDirection.Left;
+    if (coord.x > board.width - 2) return FlyDirection.Right;
+    final layer = board.tiles[coord.z];
+    final precalc = board.precalc;
+    final idx = precalc.coordToIdx(coord);
+
+    for (var leftIdx in precalc.neighborsLeft[idx]) {
+      final nCoord = precalc.idxToCoordinate(leftIdx);
+      if (layer[nCoord.y][nCoord.x] != null) return FlyDirection.Right;
+    }
+    for (var rightIdx in precalc.neighborsRight[idx]) {
+      final nCoord = precalc.idxToCoordinate(rightIdx);
+      if (layer[nCoord.y][nCoord.x] != null) return FlyDirection.Left;
+    }
+    if (coord.x < board.width / 2) {
+      return FlyDirection.Left;
+    }
+    return FlyDirection.Right;
   }
 
   @override
