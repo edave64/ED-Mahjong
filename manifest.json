@@ -1,12 +1,11 @@
 {
-    "name": "flutter_mahjong_test",
-    "short_name": "flutter_mahjong_test",
+    "name": "ED Mahjong",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "description": "An open, ad free, mahjong game, written in flutter.",
+    "orientation": "landscape-primary",
     "prefer_related_applications": false,
     "icons": [
         {
