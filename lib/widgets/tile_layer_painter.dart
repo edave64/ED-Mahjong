@@ -39,7 +39,6 @@ class TileLayerPainter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Positioned> childTiles = [];
     final painter = TileLayerPainterPainter(this);
 
     final size = tileset.getLayoutSize(width, height);
@@ -158,7 +157,6 @@ class TileLayerPainterPainter extends CustomPainter {
   Coordinate? tileHitDetect(double x, double y) {
     final tileset = widget.tileset;
     final tileFaceOffsetX = tileset.tileWidth - tileset.tileFaceWidth;
-    final tileFaceOffsetY = tileset.tileHeight - tileset.tileFaceHeight;
 
     final gridX = _between(
         0, (x - tileFaceOffsetX) / tileset.halfTileW, widget.width - 1);
