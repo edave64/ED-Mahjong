@@ -15,6 +15,7 @@ class TileLayerPainter extends StatelessWidget {
   final TilesetMeta tileset;
   final TilesetRenderer renderer;
   final int z;
+  final int shuffleId;
   final int? selectedX;
   final int? selectedY;
   final Selected? onSelected;
@@ -30,6 +31,7 @@ class TileLayerPainter extends StatelessWidget {
     required this.z,
     required this.movable,
     required this.highlightMovables,
+    required this.shuffleId,
     this.selectedX,
     this.selectedY,
     this.onSelected,
@@ -39,7 +41,7 @@ class TileLayerPainter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final painter = TileLayerPainterPainter(this);
+    final painter = TileLayerPainterPainter(this, this.shuffleId);
 
     final size = tileset.getLayoutSize(width, height);
     return GestureDetector(
@@ -59,11 +61,12 @@ class TileLayerPainter extends StatelessWidget {
 
 class TileLayerPainterPainter extends CustomPainter {
   final TileLayerPainter widget;
+  final int shuffleId;
   final int tileCount;
   final int? selectedX;
   final int? selectedY;
 
-  TileLayerPainterPainter(this.widget)
+  TileLayerPainterPainter(this.widget, this.shuffleId)
       : tileCount = widget.tiles.fold(
             0,
             (previousValue, row) =>
@@ -118,7 +121,8 @@ class TileLayerPainterPainter extends CustomPainter {
   bool shouldRepaint(TileLayerPainterPainter oldDelegate) =>
       oldDelegate.tileCount != this.tileCount ||
       oldDelegate.selectedX != this.selectedX ||
-      oldDelegate.selectedY != this.selectedY;
+      oldDelegate.selectedY != this.selectedY ||
+      oldDelegate.shuffleId != shuffleId;
 
   Iterable<Coord2D> tileDrawOrder(int height, int width) sync* {
     var x = 0;

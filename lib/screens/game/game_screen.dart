@@ -51,6 +51,7 @@ class _GamePageState extends State<GamePage> {
   int? startAt;
   int shuffles = 0;
   int maxShuffles = -1;
+  int shuffleId = 0;
 
   _GamePageState();
 
@@ -145,6 +146,7 @@ class _GamePageState extends State<GamePage> {
 
     setState(() {
       this.shuffles++;
+      this.shuffleId++;
       this.board = newBoard;
       this.history = [];
     });
@@ -257,6 +259,7 @@ class _GamePageState extends State<GamePage> {
             child: board == null
                 ? Text("Loading...")
                 : Board(
+                    shuffleId: shuffleId,
                     board: board!,
                     meta: layoutMeta!,
                     selectedX: selectedX,
@@ -471,6 +474,7 @@ class _GamePageState extends State<GamePage> {
         }
       });
       this.history = this.history.take(idx).toList();
+      this.shuffleId++;
     });
   }
 }

@@ -14,21 +14,23 @@ class Board extends StatelessWidget {
   final LayoutMeta meta;
   final GameBoard board;
   final int? selectedX;
+  final int shuffleId;
   final int? selectedY;
   final int? selectedZ;
   final Selected? onSelected;
   final TileAnimationLayer tileAnimationLayer;
 
-  Board(
-      {Key? key,
-      required this.board,
-      required this.meta,
-      required this.tileAnimationLayer,
-      this.selectedX,
-      this.selectedY,
-      this.selectedZ,
-      this.onSelected})
-      : super(key: key);
+  Board({
+    Key? key,
+    required this.board,
+    required this.meta,
+    required this.tileAnimationLayer,
+    required this.shuffleId,
+    this.selectedX,
+    this.selectedY,
+    this.selectedZ,
+    this.onSelected,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +67,7 @@ class Board extends StatelessWidget {
                                 left: tileset.levelOffsetX * z * 1.0,
                                 bottom: tileset.levelOffsetY * z * 1.0,
                                 child: TileLayerPainter(
+                                  shuffleId: shuffleId,
                                   highlightMovables: highlightMovables,
                                   tiles: board.tiles[z],
                                   z: z,
