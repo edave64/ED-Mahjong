@@ -38,36 +38,45 @@ class _LayoutPreviewState extends State<LayoutPreview> {
     });
   }
 
+  static const foregroundStyle = TextStyle(
+    fontSize: 20,
+    color: Colors.black,
+  );
+
+  static final outlineStyle = TextStyle(
+    fontSize: 20,
+    foreground: Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..color = Colors.white,
+  );
+
+  Widget? text;
+
   @override
   Widget build(BuildContext context) {
     final locale = PlatformDispatcher.instance.locale;
     final label = widget.layoutMeta.name.toLocaleString(locale);
-    final text = Center(
-        child: Stack(
-      children: <Widget>[
-        // Stroked text as border.
-        Text(
-          label,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: 20,
-            foreground: Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 3
-              ..color = Colors.white,
+    Widget? text = this.text;
+    if (text == null) {
+      this.text = text = Center(
+          child: Stack(
+        children: <Widget>[
+          // Stroked text as border.
+          Text(
+            label,
+            overflow: TextOverflow.ellipsis,
+            style: outlineStyle,
           ),
-        ),
-        // Solid text as fill.
-        Text(
-          label,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: 20,
-            color: Colors.black,
+          // Solid text as fill.
+          Text(
+            label,
+            overflow: TextOverflow.ellipsis,
+            style: foregroundStyle,
           ),
-        ),
-      ],
-    ));
+        ],
+      ));
+    }
 
     final layout = this.layout;
     final Brightness brightnessValue =

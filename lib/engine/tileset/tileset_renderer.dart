@@ -1,48 +1,85 @@
+import 'dart:typed_data';
+import 'dart:ui';
+
+import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
+import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart' show DefaultAssetBundle, BuildContext;
+import 'package:path/path.dart';
+
 class TilesetRenderer {
-  static const a = [
-    "TILE_1",
-    "TILE_1_SEL",
-    "CHARACTER_1",
-    "CHARACTER_2",
-    "CHARACTER_3",
-    "CHARACTER_4",
-    "CHARACTER_5",
-    "CHARACTER_6",
-    "CHARACTER_7",
-    "CHARACTER_8",
-    "CHARACTER_9",
-    "BAMBOO_1",
-    "BAMBOO_2",
-    "BAMBOO_3",
-    "BAMBOO_4",
-    "BAMBOO_5",
-    "BAMBOO_6",
-    "BAMBOO_7",
-    "BAMBOO_8",
-    "BAMBOO_9",
-    "ROD_1",
-    "ROD_2",
-    "ROD_3",
-    "ROD_4",
-    "ROD_5",
-    "ROD_6",
-    "ROD_7",
-    "ROD_8",
-    "ROD_9",
-    "SEASON_1",
-    "SEASON_2",
-    "SEASON_3",
-    "SEASON_4",
-    "FLOWER_1",
-    "FLOWER_2",
-    "FLOWER_3",
-    "FLOWER_4",
-    "WIND_1",
-    "WIND_2",
-    "WIND_3",
-    "WIND_4",
-    "DRAGON_1",
-    "DRAGON_2",
-    "DRAGON_3"
-  ];
+  static const baseFolder = 'assets/tilesets';
+
+  static Future<TilesetRenderer> load(
+      BuildContext context, TilesetMeta tileset) async {
+    final assetBundle = DefaultAssetBundle.of(context);
+    final folder =
+        '${baseFolder}/${basenameWithoutExtension(tileset.fileName)}';
+
+    var baseTile = loadImage(assetBundle, tileset, "${folder}/TILE_1");
+    final images = await Future.wait<Image>([
+      baseTile,
+      darkenImage(tileset, baseTile),
+      loadImage(assetBundle, tileset, "${folder}/TILE_1_SEL"),
+      ...MahjongTile.values.map((tile) =>
+          loadImage(assetBundle, tileset, "${folder}/${tileToString(tile)}")),
+    ]);
+
+    final Map<MahjongTile, Image> faceImg = {};
+    for (var i = 0; i < MahjongTile.values.length; ++i) {
+      faceImg[MahjongTile.values[i]] = images[3 + i];
+    }
+
+    return TilesetRenderer._(images[0], images[1], images[2], faceImg);
+  }
+
+  final Image tile;
+  final Image tileDark;
+  final Image tileSel;
+  final Map<MahjongTile, Image> faceImg;
+  TilesetRenderer._(this.tile, this.tileDark, this.tileSel, this.faceImg);
+
+  static Future<Image> loadImage(
+      AssetBundle bundle, TilesetMeta meta, String image) async {
+    ByteData bd = await bundle.load("$image.png");
+
+    final Uint8List bytes = Uint8List.view(bd.buffer);
+
+    final Codec codec = await instantiateImageCodec(bytes);
+    return (await codec.getNextFrame()).image;
+  }
+
+  static Future<Image> darkenImage(
+      TilesetMeta tileset, Future<Image> image) async {
+    final recorder = PictureRecorder();
+    final canvas = Canvas(recorder);
+    canvas.drawImage(
+        await image, Offset.zero, new Paint()..colorFilter = darkenFilter);
+    return recorder
+        .endRecording()
+        .toImage(tileset.tileWidth, tileset.tileHeight);
+  }
+
+  static const ColorFilter darkenFilter = ColorFilter.matrix(<double>[
+    0.5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0.5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0.5,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+  ]);
 }

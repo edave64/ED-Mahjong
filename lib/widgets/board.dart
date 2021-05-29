@@ -1,9 +1,10 @@
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/engine/pieces/game_board.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
+import 'package:ed_mahjong/engine/tileset/tileset_renderer.dart';
 import 'package:ed_mahjong/preferences.dart';
 import 'package:ed_mahjong/widgets/tile_animation_layer.dart';
-import 'package:ed_mahjong/widgets/tile_layer.dart';
+import 'package:ed_mahjong/widgets/tile_layer_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -40,32 +41,50 @@ class Board extends StatelessWidget {
 
       final singleLayerSize = tileset.getLayoutSize(board.width, board.height);
 
-      return FittedBox(
-          child: SizedBox(
-              width: singleLayerSize.x + tileset.levelOffsetX * board.depth,
-              height: singleLayerSize.y + tileset.levelOffsetY * board.depth,
-              child: Stack(children: [
-                ...List.generate(board.depth, (z) {
-                  return Positioned(
-                      left: tileset.levelOffsetX * z * 1.0,
-                      bottom: tileset.levelOffsetY * z * 1.0,
-                      child: TileLayer(
-                        highlightMovables: highlightMovables,
-                        tiles: board.tiles[z],
-                        z: z,
-                        meta: meta,
-                        tileset: tileset,
-                        movable: board.movable,
-                        selectedX: selectedZ == z ? selectedX : null,
-                        selectedY: selectedZ == z ? selectedY : null,
-                        onSelected: (x, y, z) {
-                          final selected = onSelected;
-                          if (selected != null) selected(x, y, z);
-                        },
-                      ));
-                }),
-                tileAnimationLayer,
-              ])));
+      return FutureBuilder(
+          future: tileset.getRenderer(context),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              print(snapshot.error);
+              print(snapshot.stackTrace);
+              return Text("Error");
+            }
+            if (!snapshot.hasData) return Text("Loading...");
+            return FittedBox(
+                child: SizedBox(
+                    width:
+                        singleLayerSize.x + tileset.levelOffsetX * board.depth,
+                    height:
+                        singleLayerSize.y + tileset.levelOffsetY * board.depth,
+                    child: Stack(children: [
+                      RepaintBoundary(
+                          child: Stack(
+                        children: [
+                          ...List.generate(board.depth, (z) {
+                            return Positioned(
+                                left: tileset.levelOffsetX * z * 1.0,
+                                bottom: tileset.levelOffsetY * z * 1.0,
+                                child: TileLayerPainter(
+                                  highlightMovables: highlightMovables,
+                                  tiles: board.tiles[z],
+                                  z: z,
+                                  meta: meta,
+                                  tileset: tileset,
+                                  renderer: snapshot.data as TilesetRenderer,
+                                  movable: board.movable,
+                                  selectedX: selectedZ == z ? selectedX : null,
+                                  selectedY: selectedZ == z ? selectedY : null,
+                                  onSelected: (x, y, z) {
+                                    final selected = onSelected;
+                                    if (selected != null) selected(x, y, z);
+                                  },
+                                ));
+                          }),
+                        ],
+                      )),
+                      tileAnimationLayer,
+                    ])));
+          });
     });
   }
 }

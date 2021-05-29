@@ -3,6 +3,7 @@ import 'package:ed_mahjong/engine/desktopFileReader/parse_spec.dart';
 import 'package:ed_mahjong/engine/desktopFileReader/parser.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_renderer.dart';
 import 'package:ed_mahjong/widgets/tile_layer.dart';
+import 'package:flutter/widgets.dart';
 
 final parser = buildTilesetParser();
 
@@ -74,8 +75,13 @@ class TilesetMeta {
     return TilesetMeta._(basename, desktopData);
   }
 
-  Future<TilesetRenderer> getRenderer() async {
-    return TilesetRenderer();
+  Future<TilesetRenderer>? renderer;
+  Future<TilesetRenderer> getRenderer(BuildContext context) async {
+    Future<TilesetRenderer>? renderer = this.renderer;
+    if (renderer != null) return renderer;
+    renderer = TilesetRenderer.load(context, this);
+    this.renderer = renderer;
+    return renderer;
   }
 
   Pos2D getPixelPos(Coord2D coord) {

@@ -2,6 +2,7 @@ import 'package:ed_mahjong/engine/layouts/layout.dart';
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
+import 'package:ed_mahjong/engine/tileset/tileset_renderer.dart';
 import 'package:ed_mahjong/widgets/tile.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,7 @@ class TileLayer extends StatelessWidget {
   final int width;
   final int height;
   final TilesetMeta tileset;
+  final TilesetRenderer renderer;
   final int z;
   final int? selectedX;
   final int? selectedY;
@@ -28,6 +30,7 @@ class TileLayer extends StatelessWidget {
     required this.z,
     required this.movable,
     required this.highlightMovables,
+    required this.renderer,
     this.selectedX,
     this.selectedY,
     this.onSelected,
