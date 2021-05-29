@@ -79,6 +79,7 @@ class TileLayerPainterPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final noPaint = Paint();
+    noPaint.filterQuality = FilterQuality.high;
     final renderer = widget.renderer;
     final tiles = widget.tiles;
     final tileset = widget.tileset;
