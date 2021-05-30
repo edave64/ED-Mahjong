@@ -3,6 +3,7 @@ import 'package:ed_mahjong/engine/backgrounds/background_meta.dart';
 import 'package:ed_mahjong/engine/layouts/layout_meta.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_flutter.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
+import 'package:ed_mahjong/licences.dart';
 import 'package:ed_mahjong/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'screens/home.dart';
 import 'screens/settings/settings_screen.dart';
 
 void main() {
+  registerLicences();
   runApp(MyApp());
 }
 

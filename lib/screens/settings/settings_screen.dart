@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:ed_mahjong/engine/backgrounds/background_meta.dart';
 import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
+import 'package:ed_mahjong/engine/tileset/tileset_flutter.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
 import 'package:ed_mahjong/preferences.dart';
 import 'package:ed_mahjong/screens/settings/background_screen.dart';
@@ -113,10 +114,11 @@ class _SettingsPageState extends State<SettingsPage> {
       return [ListTile(title: Text(preferences.tileset))];
     }
     final tileset = tilesets.get(preferences.tileset);
+    final localString = tileset.name.toLocaleString(locale);
     return [
       ListTile(
         leading: previewTile(tileset),
-        title: Text('Tileset: ${tileset.name.toLocaleString(locale)}'),
+        title: Text('Tileset: $localString'),
         onTap: () {
           Navigator.pushNamed(
             context,
@@ -127,6 +129,31 @@ class _SettingsPageState extends State<SettingsPage> {
       ListTile(
         leading: Text('Author:'),
         title: Text("${tileset.author} (${tileset.authorEmail})"),
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("Licence of '$localString' Tileset"),
+                  content: FutureBuilder(
+                      future: loadLicence(context, tileset),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError)
+                          return Text("Could not load licence data.");
+                        if (!snapshot.hasData)
+                          return Text("Loading licence data...");
+                        return Text(snapshot.data as String);
+                      }),
+                  actions: <Widget>[
+                    TextButton(
+                        child: Text('Neat!'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        }),
+                  ],
+                );
+              });
+        },
       ),
       if (tileset.description.toString() != "")
         ListTile(
