@@ -4,7 +4,7 @@
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "An open, ad free, mahjong game, written in flutter.",
+    "description": "An open, ad free, mahjong game.",
     "orientation": "landscape-primary",
     "prefer_related_applications": false,
     "icons": [
