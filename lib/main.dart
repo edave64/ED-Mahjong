@@ -6,7 +6,6 @@ import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
 import 'package:ed_mahjong/licences.dart';
 import 'package:ed_mahjong/preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/game/game_screen.dart';
@@ -36,14 +35,10 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'ED Mahjong',
           theme: ThemeData(
-            primarySwatch: Colors.amber,
-            accentColor: Colors.amber,
-            brightness: Brightness.light,
+            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.amber, accentColor: Colors.amber,brightness: Brightness.light),
           ),
           darkTheme: ThemeData(
-            primarySwatch: Colors.amber,
-            accentColor: Colors.amber,
-            brightness: Brightness.dark,
+            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.amber, accentColor: Colors.amber,brightness: Brightness.dark),
             /* dark theme settings */
           ),
           themeMode: ThemeMode.system,

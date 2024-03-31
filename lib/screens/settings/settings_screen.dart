@@ -8,7 +8,6 @@ import 'package:ed_mahjong/preferences.dart';
 import 'package:ed_mahjong/screens/settings/background_screen.dart';
 import 'package:ed_mahjong/screens/settings/tileset_screen.dart';
 import 'package:ed_mahjong/widgets/tile.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';

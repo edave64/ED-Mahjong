@@ -2,7 +2,6 @@ import 'package:ed_mahjong/engine/layouts/layout.dart';
 import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
 import 'package:ed_mahjong/widgets/tile.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HistoryDrawer extends StatelessWidget {

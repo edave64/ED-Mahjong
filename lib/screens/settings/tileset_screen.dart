@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:ed_mahjong/engine/tileset/tileset_meta.dart';
 import 'package:ed_mahjong/preferences.dart';
 import 'package:ed_mahjong/screens/settings/settings_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

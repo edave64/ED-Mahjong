@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:ed_mahjong/engine/db_implementations/sembast.dart';
-import 'package:ed_mahjong/engine/db_implementations/sqflite.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 abstract class IHighscoreDB {
   Future<Map<String, int>> getTimes();
@@ -14,11 +12,7 @@ class HighscoreDB extends IHighscoreDB {
   static final HighscoreDB instance = HighscoreDB._();
 
   IHighscoreDB get database {
-    if (kIsWeb) {
-      return HighscoreSembast.instance;
-    } else {
-      return HighscoreDBSql.instance;
-    }
+    return HighscoreSembast.instance;
   }
 
   Map<String, int>? _times;

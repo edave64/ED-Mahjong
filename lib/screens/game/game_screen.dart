@@ -227,7 +227,7 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     final locale = PlatformDispatcher.instance.locale;
     final tilesetMeta = this.tilesetMeta;
     final layoutMeta = this.layoutMeta;
@@ -368,7 +368,7 @@ class _GamePageState extends State<GamePage> {
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
     super.dispose();
   }
 
