@@ -1,11 +1,12 @@
 {
-    "name": "ED Mahjong",
+    "name": "ed_mahjong",
+    "short_name": "ed_mahjong",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "An open, ad free, mahjong game.",
-    "orientation": "landscape-primary",
+    "description": "An open, ad free, mahjong solitaire game.",
+    "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
         {

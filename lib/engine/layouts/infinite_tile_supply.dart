@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:ed_mahjong/engine/pieces/mahjong_tile.dart';
 
-class InfiniteTileSupply extends Iterator<MahjongTile> {
+class InfiniteTileSupply implements Iterator<MahjongTile> {
   final Random random;
   List<MahjongTile> baseSupply = [];
   List<MahjongTile> baseFlowersSupply = [];
