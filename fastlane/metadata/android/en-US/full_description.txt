@@ -1,0 +1,5 @@
+An open, ad free, mahjong solitaire game.
+
+Features 72 board layouts and 7 tile designs.
+
+Uses boards and tile sets from KMahjongg.
